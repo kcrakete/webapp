@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>KC Rakete - Regel-Bot</title>
+    <title>KC Rakete - Kegelabgabenordnung</title>
     <style>
         :root {
             --primary: #e3000b;
+            --primary-dark: #b80008;
             --bg: #f5f5f5;
             --surface: #ffffff;
             --text: #1a1a1a;
             --border: #d1d1d1;
-            --chat-user: #e3000b;
-            --chat-bot: #333333;
+            --card-bg-subtle: rgba(227, 0, 11, 0.03);
+            --chat-bot-bg: #2a2a2a;
+            --chat-user-bg: #e3000b;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -21,7 +23,8 @@
                 --surface: #1e1e1e;
                 --text: #ffffff;
                 --border: #333333;
-                --chat-bot: #2a2a2a;
+                --card-bg-subtle: rgba(227, 0, 11, 0.08);
+                --chat-bot-bg: #2d2d2d;
             }
         }
 
@@ -31,245 +34,902 @@
         }
         
         html, body { 
-            width: 100%; height: 100%; margin: 0; padding: 0;
-            background: var(--bg); font-family: -apple-system, system-ui, sans-serif;
-            color: var(--text); overflow: hidden;
-            display: flex; flex-direction: column;
+            width: 100%; 
+            height: 100%; 
+            margin: 0; 
+            padding: 0;
+            background: var(--bg); 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text); 
+            overflow: hidden;
         }
 
         /* FIXIERTER HEADER */
         .fixed-header {
             position: fixed;
-            top: 0; left: 0; width: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
             background: var(--surface);
-            z-index: 2000;
+            z-index: 1000;
             border-bottom: 2px solid var(--primary);
-            padding: env(safe-area-inset-top) 15px 15px 15px;
-            display: flex; flex-direction: column; align-items: center;
+            padding: calc(env(safe-area-inset-top) + 10px) 15px 12px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        /* ZURÜCK BUTTON */
         .back-btn {
             position: absolute;
             left: 15px;
-            top: calc(15px + env(safe-area-inset-top));
+            top: calc(env(safe-area-inset-top) + 10px);
             color: var(--primary);
-            text-decoration: none;
-            font-size: 1.2rem;
-            font-weight: bold;
+            background: rgba(227, 0, 11, 0.08);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.05);
-            transition: background 0.2s;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.2s ease;
         }
 
         .back-btn:active {
-            background: rgba(0, 0, 0, 0.15);
+            background: var(--primary);
+            color: #ffffff;
         }
 
         .fixed-header h1 { 
-            margin: 10px 0 5px 0; 
+            margin: 0; 
             font-size: 1.1rem; 
             color: var(--primary); 
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-align: center;
+            font-weight: 800;
         }
 
-        .subtitle {
-            font-size: 0.85rem;
+        .fixed-header .subtitle {
+            font-size: 0.8rem;
             color: var(--text);
-            opacity: 0.7;
-            margin-bottom: 5px;
+            opacity: 0.75;
+            font-weight: 600;
+            margin-top: 2px;
         }
 
-        /* CHAT-BEREICH (SCROLLBAR) */
-        .chat-container {
-            flex: 1;
+        /* QUICK NAV BAR */
+        .nav-pills {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 600px;
+            justify-content: center;
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+
+        .nav-pill {
+            background: var(--bg);
+            color: var(--text);
+            text-decoration: none;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .nav-pill:active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        /* SCROLL-BEREICH FUER DIE REGELEINSEHEN */
+        .content-container {
+            height: 100vh;
             overflow-y: auto;
-            padding: 110px 20px 90px 20px; 
+            padding: 135px 16px 100px 16px; 
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        }
+
+        .law-container {
             max-width: 600px;
-            width: 100%;
             margin: 0 auto;
         }
 
-        .message {
-            max-width: 85%;
-            padding: 12px 16px;
-            border-radius: 16px;
-            font-size: 1rem;
-            line-height: 1.4;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            white-space: pre-wrap;
-            animation: fadeIn 0.3s ease forwards;
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin: 28px 0 14px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .section-title:first-of-type {
+            margin-top: 5px;
         }
 
-        .message.bot {
-            background: var(--chat-bot);
-            color: #ffffff;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
+        .card {
+            background: var(--surface);
+            margin-bottom: 14px;
+            padding: 16px 18px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
             border: 1px solid var(--border);
         }
 
-        .message.user {
-            background: var(--chat-user);
-            color: #ffffff;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.05rem;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
         }
 
-        /*EINGABE-BEREICH AM BODEN */
-        .input-area {
+        .card-content {
+            font-size: 0.92rem;
+            line-height: 1.55;
+            color: var(--text);
+        }
+
+        .card-content ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .card-content li {
+            margin-bottom: 6px;
+        }
+
+        .card-content li:last-child {
+            margin-bottom: 0;
+        }
+
+        .highlight-box {
+            background: var(--card-bg-subtle);
+            border-left: 3px solid var(--primary);
+            padding: 8px 12px;
+            border-radius: 0 6px 6px 0;
+            margin-top: 10px;
+            font-size: 0.88rem;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text);
+            opacity: 0.6;
+            margin: 35px 0 20px 0;
+            font-weight: 600;
+        }
+
+        /* FLOATING CHAT TRIGGER BUTTON */
+        .chat-toggle-btn {
             position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            background: var(--surface);
-            border-top: 1px solid var(--border);
-            padding: 12px 20px calc(12px + env(safe-area-inset-bottom)) 20px;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            box-shadow: 0 6px 18px rgba(227, 0, 11, 0.4);
+            cursor: pointer;
             display: flex;
-            justify-content: center;
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
-            z-index: 2000;
+            align-items: center;
+            gap: 8px;
+            z-index: 1500;
+            transition: transform 0.2s, background 0.2s;
         }
 
-        .input-wrapper {
-            max-width: 600px;
-            width: 100%;
+        .chat-toggle-btn:active {
+            transform: scale(0.95);
+            background: var(--primary-dark);
+        }
+
+        .chat-toggle-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* CHAT BOT OVERLAY (MASKE) */
+        .chat-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(3px);
+            z-index: 3000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .chat-overlay.active {
             display: flex;
+            opacity: 1;
+        }
+
+        .chat-window {
+            background: var(--surface);
+            width: 100%;
+            max-width: 500px;
+            height: 75vh;
+            max-height: 650px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: 0 -8px 24px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            border: 1px solid var(--border);
+            border-bottom: none;
+        }
+
+        .chat-overlay.active .chat-window {
+            transform: translateY(0);
+        }
+
+        .chat-header {
+            background: var(--surface);
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
             gap: 10px;
         }
 
-        #query-input {
+        .chat-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .chat-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        .chat-subtitle {
+            font-size: 0.75rem;
+            color: var(--text);
+            opacity: 0.6;
+        }
+
+        .chat-close-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 0 6px;
+            opacity: 0.7;
+        }
+
+        .chat-close-btn:hover {
+            opacity: 1;
+        }
+
+        /* CHAT MESSAGES AREA */
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--bg);
+        }
+
+        .msg {
+            max-width: 82%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            line-height: 1.45;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            animation: msgFadeIn 0.2s ease forwards;
+        }
+
+        @keyframes msgFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg.bot {
+            background: var(--chat-bot-bg);
+            color: #ffffff;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border: 1px solid var(--border);
+        }
+
+        .msg.user {
+            background: var(--chat-user-bg);
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        /* CHAT INPUT AREA */
+        .chat-input-area {
+            padding: 12px 16px calc(12px + env(safe-area-inset-bottom)) 16px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+        }
+
+        #chat-input {
             flex: 1;
             background: var(--bg);
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 12px 16px;
-            border-radius: 24px;
-            font-size: 1rem;
+            padding: 10px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
             outline: none;
-            transition: border-color 0.2s;
         }
 
-        #query-input:focus {
+        #chat-input:focus {
             border-color: var(--primary);
         }
 
-        #send-btn {
+        #chat-send-btn {
             background: var(--primary);
             color: #ffffff;
             border: none;
-            padding: 0 20px;
-            border-radius: 24px;
-            font-size: 1rem;
+            padding: 0 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.1s;
         }
 
-        #send-btn:active {
-            transform: scale(0.95);
+        #chat-send-btn:active {
+            background: var(--primary-dark);
         }
     </style>
 </head>
 <body>
 
-    <div class="fixed-header">
-        <a href="/webapp/startseite/" class="back-btn" aria-label="Zurück">&#10094;</a>
+    <!-- FIXIERTER HEADER -->
+    <div class="fixed-header" id="main-header">
+        <button type="button" class="back-btn" onclick="goBack()" aria-label="Zurück">&#10094;</button>
         <h1>KC Rakete</h1>
-        <div class="subtitle">Offizieller Regel-Bot (Mai 2026)</div>
+        <div class="subtitle">Kegelabgabenordnung</div>
+        <div class="nav-pills">
+            <a href="#p1" class="nav-pill">§ 1 Strafen</a>
+            <a href="#p2" class="nav-pill">§ 2 Spiele</a>
+            <a href="#p3" class="nav-pill">§ 3 Sonstiges</a>
+        </div>
     </div>
 
-    <div class="chat-container" id="chat-box">
-        <div class="message bot">Grüß dich! Ich kenne die Kegelabgabenordnung in- und auswendig. Frag mich einfach, was eine Strafe kostet oder wie ein Spiel funktioniert.</div>
+    <!-- GESETZESTEXT -->
+    <div class="content-container" id="scroll-area">
+        <div class="law-container">
+
+            <!-- § 1 STRAFEN -->
+            <div id="p1" class="section-title">§ 1 Strafen</div>
+
+            <div class="card">
+                <h3>Allgemeiner Kegelbeginn</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>Kegelbeginn ist durch Eröffnung des ersten Wurfes des Kallenkönigs beim ersten Spiel.</li>
+                        <li>Die Reihenfolge (im oder gegen den Uhrzeigersinn) entscheidet der Kallenkönig.</li>
+                        <li>Vorher muss der König keine Krone tragen und es gibt keine Strafen.</li>
+                        <li>Ist der Kallenkönig nicht anwesend, übernimmt dies der Schlechteste anwesende vom vergangenen Kegeln.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Kallen</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>Eine Kalle kostet <b>0,50 €</b>.</li>
+                        <li>Punkte, die trotz Kalle geworfen wurden, zählen.</li>
+                        <li>Ein Wurf kann mehrere Kallen-Strafen verursachen, indem die Kugel aus der Kalle raus und wieder zurück in die Kalle rollt.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Verlorenes Spiel</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>Ein verlorenes Spiel kostet <b>1,00 €</b>.</li>
+                        <li>Es verlieren immer mindestens 50 % der Teilnehmer.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Kugeln gebracht</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>Eine gebrachte Kugel kostet <b>2,00 €</b>.</li>
+                        <li>Eine Kugel gilt als gebracht, wenn dem Spieler, der an der Reihe ist, die Kugel auf den Platz gelegt wird, ohne dass dieser die Kugel entgegennimmt.</li>
+                        <li>Nimmt der Spieler die Kugel erst hinter der vorderen Tischkante an, so muss er diese für den entsprechenden Wurf verwenden.</li>
+                        <li>Wird einem Spieler eine Kugel gebracht, welcher nicht an der Reihe ist, so wird die Strafe dem Kugel-Bringer vermerkt.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Klingel</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>Das Klingeln beim Werfen kostet <b>1,00 €</b>.</li>
+                        <li>Punkte, die trotz Klingel geworfen wurden, zählen.</li>
+                        <li>Die Strafe erfolgt, wenn die Mehrheit ein Geräusch wahrgenommen hat.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Bilder</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>Kegelt ein Spieler eines der beiden Bilder (z.B. Vorzeichen / Stina / Kackstuhl), kostet dies <b>0,50 €</b> Strafe.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Langsames Werfen / Einholen</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>Eine eingeholte Kugel kostet <b>5,00 €</b>.</li>
+                        <li>Eine Kugel gilt als eingeholt, wenn der Läufer das Ende der Bahn abklatscht, bevor die Kugel den ersten Kegel berührt.</li>
+                        <li>Schafft der Läufer es nicht regelkonform schneller zu sein als die Kugel, kassiert er die Strafe.</li>
+                        <li>Die Kugel darf vom Läufer nicht berührt werden.</li>
+                        <li>Der Läufer muss beim Werfen der Kugel hinter dem Werfenden stehen.</li>
+                        <li>Berührungen oder Behinderungen zwischen Spielern kosten <b>10,00 €</b>.</li>
+                        <li>Punkte, die trotz Einholen geworfen wurden, zählen.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Zu spät kommen</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>Unentschuldigtes Zu-Spät-Kommen kostet <b>10,00 €</b>.</li>
+                        <li>Zu spät ist jeder, der 5 Minuten nach Beginn nicht auf der Kegelbahn ist.</li>
+                        <li>Zu-Spät-Kommen kann bis 24 Stunden vorher in der WhatsApp-Gruppe straffrei angekündigt werden.</li>
+                        <li>Wer zu spät kommt, bekommt den aufgerundeten Mittelwert der Kallen und verlorenen Spiele zum Zeitpunkt der Ankunft.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Nicht Erscheinen</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>Unentschuldigtes Nicht-Erscheinen kostet den <b>doppelten Durchschnitt</b> der Strafen der Teilnehmenden.</li>
+                        <li>Nicht-Erscheinen kann bis zu 7 Tage vorher in der WhatsApp-Gruppe straffrei angekündigt werden.</li>
+                        <li>Entschuldigtes Nicht-Erscheinen nach der 7-Tage-Frist kostet den <b>einfachen Durchschnitt</b> der Strafen der Teilnehmenden.</li>
+                        <li>Ausnahme besteht, wenn der Betroffene eine AU für den Tag hat.</li>
+                        <li>Das Nicht-Erscheinen des Kallen-Königs ist in §3 geregelt und betrifft diese Regeln nicht.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Unsportliches Verhalten</h3>
+                <div class="card-content">
+                    <ul>
+                        <li><b>Reihenfolge nicht einhalten:</b> Wirft ein Spieler, welcher nicht an der Reihe ist, kostet dies <b>1,00 €</b>.</li>
+                        <li><b>Glas umkippen:</b> Wird ein Glas umgekippt, zahlt der Verursacher <b>1,00 € je Anwesenden</b> als Strafe.</li>
+                        <li><b>Kegelbahn:</b> Bringt ein Spieler die Bahn nach seinem Wurf nicht wieder in den Zustand, dass der Nächste werfen kann, kostet dies <b>5,00 €</b>.</li>
+                        <li><b>Tafel:</b> Schreibt ein Spieler seinen Wurf nicht richtig an die Tafel (Position und Zahl) und der nächste Spieler wirft, kostet dies <b>1,00 €</b>.</li>
+                        <li><b>Vorzeitig gehen:</b> Geht ein Spieler, bevor das letzte Spiel angefangen hat, kostet dies <b>5,00 €</b>. Zudem wird König, wer zum Zeitpunkt des Verlassens des ersten Teilnehmers die meisten Kallen hat.</li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-- § 2 SPIELE -->
+            <div id="p2" class="section-title">§ 2 Spiele</div>
+
+            <div class="card">
+                <h3>Allgemeine Spielregeln</h3>
+                <div class="card-content">
+                    <p>Geht die Kugel durch die Kegel und/oder wird kein Kegel getroffen, wird der Wurf wie eine Kalle gewertet.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Auf Ziel: Große Hausnummer</h3>
+                <div class="card-content">
+                    Jeder Spieler hat 3 Würfe und sortiert diese auf eine der drei Positionen. Die größten Hausnummern gewinnen. Eine Kalle wird als 0 gewertet.
+                    <div class="highlight-box">⚡ <b>Blitz-KO:</b> Genau 999 führt zum sofortigen Sieg; alle anderen verlieren.</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Auf Ziel: Kleine Hausnummer</h3>
+                <div class="card-content">
+                    Jeder Spieler hat 3 Würfe und sortiert diese auf eine der drei Positionen. Die kleinsten Hausnummern gewinnen. Eine Kalle wird als 9 gewertet.
+                    <div class="highlight-box">⚡ <b>Blitz-KO:</b> Genau 111 führt zum sofortigen Sieg; alle anderen verlieren.</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Auf Ziel: Mittlere Hausnummer</h3>
+                <div class="card-content">
+                    Jeder Spieler hat 3 Würfe und sortiert diese auf eine der drei Positionen. Gewonnen hat, wer die niedrigste Differenz zu 555 hat. Eine Kalle wird als 0 gewertet.
+                    <div class="highlight-box">⚡ <b>Blitz-KO:</b> Genau 555 führt zum sofortigen Sieg; alle anderen verlieren.</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Auf Ziel: 126</h3>
+                <div class="card-content">
+                    Jeder Spieler hat 3 Würfe. Wird eine 1, 2 oder 6 geworfen, muss diese an die entsprechende Position gesetzt werden. Eine Kalle zählt als 9. Die niedrigste Differenz zu 126 gewinnt.
+                    <div class="highlight-box">⚡ <b>Blitz-KO:</b> Genau 126 führt zum sofortigen Sieg; alle anderen verlieren.</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Power Kegeln</h3>
+                <div class="card-content">
+                    Die Spieler werden in zwei Teams aufgeteilt. Jedes Team darf x (vorher festgelegte) Minuten kegeln. Das Team mit den meisten Punkten gewinnt. Optional mit Abräumen.
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Fuchsjagd</h3>
+                <div class="card-content">
+                    Reihum ist ein Spieler Fuchs, alle anderen sind Jäger. Der Fuchs wirft zuerst 2x, dann ein Jäger, danach abwechselnd. Schafft ein Jäger den Fuchs einzuholen, verliert der Fuchs. Kalle = 0.
+                    <div class="highlight-box">🏆 Schafft der Fuchs 21 Punkte, verlieren alle Jäger.</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Einsacken</h3>
+                <div class="card-content">
+                    Aufteilung in zwei Teams. Das Team, welches zuerst exakt 51 Punkte erreicht, gewinnt. Es wird reihum geworfen, bis man einsackt.
+                    <div class="highlight-box">⚠️ Bei Kalle, einer 5 oder >51 verfallen alle Punkte der Runde und der Zug wechselt.</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Einpacken</h3>
+                <div class="card-content">
+                    Aufteilung in zwei Teams. Zuerst exakt 51 Punkte gewinnt. Im Team wird geworfen, bis man einpackt.
+                    <div class="highlight-box">⚠️ Bei Kalle, weniger Punkten als der Vormann oder >51 verfallen alle Punkte der Runde und der Zug wechselt.</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Wir kegeln im Dreieck</h3>
+                <div class="card-content">
+                    Namen stehen im Kreis. Jeder Wurf muss vom Nachfolger überworfen werden. Gelingt dies nicht, gibt es einen Strich. Drei Striche bilden ein Dreieck (Verloren). Nach dem Wurf wird gemäß Punktzahl im Kreis weitergezählt. Spiel endet, sobald die 50%-Verliererquote erreicht ist.
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Tag und Nacht</h3>
+                <div class="card-content">
+                    Jeder Spieler hat 4 Würfe. Auswertung: (Wurf 1 + 3) minus (Wurf 2 + 4). 
+                    <ul>
+                        <li>Negatives Ergebnis = Automatischer Verlust (unabhängig von Quote).</li>
+                        <li>Kalle = 9 Punkte Abzug bzw. 0 Punkte Plus.</li>
+                        <li>Höchste Summe gewinnt.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Sarg-Kegeln</h3>
+                <div class="card-content">
+                    Namen im Kreis, Abräumen an. Der Erste wirft in die Vollen. Der Nachfolgende muss mind. 1 Kegel treffen, sonst droht ein Sargstrich. Bei 6 Strichen (Sarg `<=>`) ist man raus.
+                    <ul>
+                        <li>Wer abräumt, entfernt einen eigenen Strich (oder erhält ein Plus).</li>
+                        <li>Wer nicht abräumen kann, bekommt einen Strich, wenn der Nachfolgende abräumt.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Busfahrer</h3>
+                <div class="card-content">
+                    10 Busse (Linien 1-9 & Kalle) an der Tafel. Jede Zahl weist den Spieler einem Bus zu (Kallen-Bus gesperrt). Ab Runde 2 erhält die geworfene Buslinie einen Reifen. Es verlieren die Insassen des Busses, der zuerst 6 Reifen hat (Kallen-Bus 12).
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Anrufen</h3>
+                <div class="card-content">
+                    <ul>
+                        <li><b>Vorrunde:</b> 1 Wurf auf die Vollen bestimmt die Telefonnummer (bei Kalle wird wiederholt).</li>
+                        <li><b>Hauptrunde:</b> 2 Würfe pro Runde. Wurf 1 = Telefonnummer. Wurf 2 = Anzahl Striche (0,10 € / Strich) für den Besitzer dieser Telefonnummer.</li>
+                        <li>Keine gültige Nummer im 1. Wurf? Striche aus 2. Wurf gelten für einen selbst.</li>
+                        <li>Kalle im 2. Wurf = 9 Striche Strafe.</li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-- § 3 SONSTIGES -->
+            <div id="p3" class="section-title">§ 3 Sonstiges</div>
+
+            <div class="card">
+                <h3>Kallen-König & Krone</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>Der Kallen-König sorgt für seine Krone. Keine Krone dabei = <b>5,00 €</b>.</li>
+                        <li>Absetzen der Krone während des Kegelns = <b>1,00 €</b> pro Absetzen.</li>
+                        <li>Fehlen beim Kegeln = <b>5,00 € + doppelter Strafen-Durchschnitt</b> (Ausnahme: AU).</li>
+                        <li>Straffreie Absage für den Folge-Termin am Krönungstag möglich.</li>
+                        <li><b>Neuer König:</b> Meiste Kallen am Ende des Abends. Bei Gleichstand Auskegeln (Münzwurf bestimmt Reihenfolge, wer am wenigsten trifft/Kalle wirft ist König).</li>
+                        <li><b>Thronfolger-Regelung:</b> Fehlt der König 1x, bleibt er ohne Antreten König. Fehlt er ein 2. Mal in Folge, wird der Tagestiefste mit den meisten Kallen gekrönt. Übergabe erfolgt zu „God save the King“.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Gastkegler</h3>
+                <div class="card-content">
+                    <ul>
+                        <li>Teilnahme auf Vorschlag eines Mitglieds mit ¾-Mehrheit oder ohne Widerspruch.</li>
+                        <li>Gastkegler nehmen zu 100 % an Spielen und Strafen teil.</li>
+                        <li>Wird ein Gastkegler Kallen-König, muss er beim nächsten Mal mit Krone erscheinen.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Anwesenheit ohne Teilnahme</h3>
+                <div class="card-content">
+                    Kegelbrüder, die anwesend sind, aber ordnungsgemäß abgesagt haben und nicht teilnehmen, gelten als nicht anwesend und sind von allen Regeln befreit.
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Abstimmungen</h3>
+                <div class="card-content">
+                    Entscheidungen und Änderungen an der Abgabenordnung werden mit einer einfachen Mehrheit der Anwesenden beschlossen.
+                </div>
+            </div>
+
+            <div class="footer-note">
+                KC Rakete – Offizielle Regelung
+            </div>
+
+            <div style="height: 30vh;"></div>
+        </div>
     </div>
 
-    <div class="input-area">
-        <div class="input-wrapper">
-            <input type="text" id="query-input" placeholder="Frage eingeben (z.B. Was kostet Kalle?)..." autocomplete="off">
-            <button id="send-btn">Senden</button>
+    <!-- CHAT BOT TRIGGER BUTTON -->
+    <button class="chat-toggle-btn" onclick="openChat()">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+        Regel-Bot
+    </button>
+
+    <!-- CHAT BOT OVERLAY (MASKE) -->
+    <div class="chat-overlay" id="chat-overlay" onclick="closeChatOnOverlay(event)">
+        <div class="chat-window">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="chat-avatar">KC</div>
+                    <div>
+                        <div class="chat-title">KC Rakete Regel-Bot</div>
+                        <div class="chat-subtitle">Intelligente Regelabfrage</div>
+                    </div>
+                </div>
+                <button class="chat-close-btn" onclick="closeChat()">&times;</button>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="msg bot">Grüß dich! Ich kenne die gesamte Kegelabgabenordnung im Detail. Frag mich nach Strafen, Preisen, Regeln oder bestimmten Spielen!</div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Frage stellen..." autocomplete="off" onkeypress="handleKeyPress(event)">
+                <button id="chat-send-btn" onclick="sendChatMessage()">Senden</button>
+            </div>
         </div>
     </div>
 
 <script>
-    // Lokale Wissensdatenbank direkt aus der hochgeladenen Kegelabgabenordnung extrahiert
-    const rulesDatabase = [
-        { keywords: ["kalle", "kallen", "kugeln"], text: "Eine Kalle kostet 0,50 €. Punkte, die trotz Kalle geworfen wurden, zählen. Ein Wurf kann mehrere Kallen-Strafen verursachen, wenn die Kugel aus der Kalle raus und wieder zurück rollt." },
-        { keywords: ["verloren", "verlorenes spiel"], text: "Ein verlorenes Spiel kostet 1,00 €. Es verlieren immer mindestens 50% der Teilnehmer." },
-        { keywords: ["kugel gebracht", "gebrachte kugel", "bringen"], text: "Eine gebrachte Kugel kostet 2,00 €. Gilt als gebracht, wenn sie dem Spieler auf den Platz gelegt wird, ohne dass dieser sie entgegennimmt. Nimmt er sie erst hinter der vorderen Tischkante an, muss er sie nutzen. Wird sie dem Falschen gebracht, zahlt der Bringer." },
-        { keywords: ["klingel", "klingeln"], text: "Das Klingeln beim Werfen kostet 1,00 €. Punkte zählen trotzdem. Die Strafe erfolgt, wenn die Mehrheit ein Geräusch wahrgenommen hat." },
-        { keywords: ["stina", "kackstuhl", "bilder", "bild"], text: "Kegelt ein Spieler das Bild 'Stina' oder 'Kackstuhl', kostet das 0,50 € Strafe. Dies sind die häufigsten Wurfergebnisse, die in die Vollen unabsichtlich stehen bleiben." },
-        { keywords: ["langsam", "läufer", "eingeholt"], text: "Eine eingeholte Kugel kostet 5,00 €. Gilt als eingeholt, wenn der Läufer das Ende der Bahn abklatscht, bevor die Kugel den ersten Kegel berührt. Berührungen oder Behinderungen zwischen Spielern kosten 10,00 €." },
-        { keywords: ["zu spät", "pünktlich", "whatsapp"], text: "Unentschuldigtes zu spät kommen kostet 10,00 € (jeder, der 5 Minuten nach Beginn nicht da ist). Bis zu 24 Stunden vorher in der WhatsApp-Gruppe ist es straffrei. Wer zu spät kommt, bekommt den aufgerundeten Mittelwert der Kallen und verlorenen Spiele." },
-        { keywords: ["nicht erscheinen", "fehlen", "abwesend"], text: "Unentschuldigtes Nichtscheinen kostet den doppelten Durchschnitt aller Strafen. Absage bis zu 7 Tage vorher per WhatsApp ist straffrei. Entschuldigt nach der Frist kostet den einfachen Durchschnitt. Ausnahme: AU für den Tag." },
-        { keywords: ["unsportlich", "reihenfolge", "glas", "umkippen", "tafel", "vorzeitig"], text: "Reihenfolge missachtet: 1,00 €.\nGlas umkippen: 1,00 € je Anwesenden.\nBahn nicht startbereit hinterlassen: 5,00 €.\nWurf nicht richtig angeschrieben: 1,00 €.\nVorzeitig gehen: 5,00 € (und man wird König, wenn man zu dem Zeitpunkt die meisten Kallen hat)." },
-        { keywords: ["könig", "kallen-könig", "krone", "god save the king"], text: "Der Kallen-König muss seine Krone mitbringen (fehlt sie: 5,00 €). Jedes Absetzen kostet 1,00 €. Fehlt er unentschuldigt: 5,00 € + doppelter Strafendurchschnitt. Neuer König wird, wer am Ende die meiste Kallen hat." },
-        { keywords: ["hausnummer", "große hausnummer", "kleine hausnummer"], text: "Große Hausnummer: 3 Würfe sortieren, höchste gewinnt (Kalle = 0). 999 ist Blitz-KO.\nKleine Hausnummer: 3 Würfe sortieren, kleinste gewinnt (Kalle = 9). 111 ist Blitz-KO." },
-        { keywords: ["einsacken", "einpacken"], text: "Einsacken/Einpacken: Teams spielen auf exakt 51 Punkte. Bei Kalle oder Fehler verfallen alle Punkte der Runde und der Zug endet. Verliererteam bekommt ein verlorenes Spiel." },
-        { keywords: ["gast", "gastkegler"], text: "Gastkegler dürfen auf Vorschlag mit 2/3 Mehrheit (oder ohne Widerspruch) teilnehmen. Sie müssen zu 100% an Spielen und Strafen teilnehmen. Werden sie Kallen-König, müssen sie nächstes Mal mit Krone erscheinen." }
-    ];
-
-    const chatBox = document.getElementById('chat-box');
-    const queryInput = document.getElementById('query-input');
-    const sendBtn = document.getElementById('send-btn');
-
-    function appendMessage(text, sender) {
-        const msg = document.createElement('div');
-        msg.className = `message ${sender}`;
-        msg.innerText = text;
-        chatBox.appendChild(msg);
-        chatBox.scrollTop = chatBox.scrollHeight;
+    /* 1. ZURUECKTASTE FALLBACK REGELUNG */
+    function goBack() {
+        if (window.history.length > 1 && document.referrer.includes(window.location.host)) {
+            window.history.back();
+        } else {
+            window.location.href = "../startseite/";
+        }
     }
 
-    function processQuery() {
-        const query = queryInput.value.trim().toLowerCase();
+    /* 2. CHAT BOT OVERLAY LOGIK */
+    function openChat() {
+        const overlay = document.getElementById('chat-overlay');
+        overlay.classList.add('active');
+        document.getElementById('chat-input').focus();
+    }
+
+    function closeChat() {
+        const overlay = document.getElementById('chat-overlay');
+        overlay.classList.remove('active');
+    }
+
+    function closeChatOnOverlay(e) {
+        if (e.target.id === 'chat-overlay') {
+            closeChat();
+        }
+    }
+
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            sendChatMessage();
+        }
+    }
+
+    /* 3. DYNAMISCHES EXTRAHIEREN DER REGELN & SCHLAUERER SUCH-ALGORITHMUS */
+    let ruleIndex = [];
+
+    function buildKnowledgeBaseFromDOM() {
+        ruleIndex = [];
+        const cards = document.querySelectorAll('.card');
+        
+        cards.forEach(card => {
+            const titleEl = card.querySelector('h3');
+            const contentEl = card.querySelector('.card-content');
+            
+            if (titleEl && contentEl) {
+                const title = titleEl.innerText.trim();
+                const text = contentEl.innerText.trim();
+                const combinedText = (title + ' ' + text).toLowerCase();
+                const tokens = combinedText.match(/[a-zäöüß0-9]+/g) || [];
+                
+                ruleIndex.push({
+                    title: title,
+                    text: text,
+                    fullText: combinedText,
+                    tokens: tokens
+                });
+            }
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        buildKnowledgeBaseFromDOM();
+    });
+
+    function sendChatMessage() {
+        const input = document.getElementById('chat-input');
+        const query = input.value.trim();
         if (!query) return;
 
-        appendMessage(queryInput.value, 'user');
-        queryInput.value = '';
+        appendMessage(query, 'user');
+        input.value = '';
 
-        // Simulierter RAG-Suchalgorithmus auf Client-Seite
         setTimeout(() => {
-            let bestMatch = null;
-            let maxScore = 0;
+            const answer = calculateBotResponse(query);
+            appendMessage(answer, 'bot');
+        }, 350);
+    }
 
-            rulesDatabase.forEach(entry => {
-                let score = 0;
-                entry.keywords.forEach(keyword => {
-                    if (query.includes(keyword)) score++;
-                });
-                if (score > maxScore) {
-                    maxScore = score;
-                    bestMatch = entry;
+    function appendMessage(text, sender) {
+        const container = document.getElementById('chat-messages');
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `msg ${sender}`;
+        msgDiv.innerText = text;
+        container.appendChild(msgDiv);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function calculateBotResponse(userQuery) {
+        if (!ruleIndex || ruleIndex.length === 0) {
+            buildKnowledgeBaseFromDOM();
+        }
+
+        const qLower = userQuery.toLowerCase();
+        const qTokens = qLower.match(/[a-zäöüß0-9]+/g) || [];
+
+        if (qTokens.length === 0) {
+            return "Bitte gib eine Frage oder einen Suchbegriff ein.";
+        }
+
+        const synonymMap = {
+            "preis": ["kostet", "kosten", "strafe", "€", "euro"],
+            "preise": ["kostet", "kosten", "strafe", "€", "euro"],
+            "kostet": ["preis", "kosten", "strafe", "€", "euro"],
+            "kosten": ["preis", "kostet", "strafe", "€", "euro"],
+            "kalle": ["kallen"],
+            "kallen": ["kalle"],
+            "bier": ["glas"],
+            "getränk": ["glas"],
+            "spät": ["pünktlich", "uhrzeit", "verspätung"],
+            "fehlen": ["abwesend", "nicht erscheinen", "krank"],
+            "könig": ["krone", "kallen-könig"]
+        };
+
+        let matches = [];
+
+        ruleIndex.forEach(item => {
+            let score = 0;
+
+            qTokens.forEach(token => {
+                if (item.fullText.includes(token)) {
+                    score += 3;
+                    if (item.title.toLowerCase().includes(token)) {
+                        score += 5;
+                    }
+                }
+
+                if (synonymMap[token]) {
+                    synonymMap[token].forEach(syn => {
+                        if (item.fullText.includes(syn)) {
+                            score += 2;
+                        }
+                    });
                 }
             });
 
-            if (maxScore > 0 && bestMatch) {
-                appendMessage(bestMatch.text, 'bot');
-            } else {
-                appendMessage("Dazu habe ich in der Kegelabgabenordnung nichts Konkretes gefunden. Frag mich am besten nach Kallen, Strafen, dem Kallen-König oder bestimmten Spielen wie Hausnummern.", 'bot');
+            if (score > 0) {
+                matches.push({ item: item, score: score });
             }
-        }, 400);
-    }
+        });
 
-    sendBtn.addEventListener('click', processQuery);
-    queryInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') processQuery();
-    });
+        matches.sort((a, b) => b.score - a.score);
+
+        if (matches.length > 0) {
+            const topMatch = matches[0].item;
+            
+            if (matches.length === 1 || matches[0].score > matches[1].score + 2) {
+                return `📍 ${topMatch.title}:\n${topMatch.text}`;
+            } else {
+                let response = `Hier ist was ich zu "${userQuery}" gefunden habe:\n\n`;
+                const top2 = matches.slice(0, 2);
+                top2.forEach(m => {
+                    response += `👉 ${m.item.title}:\n${m.item.text}\n\n`;
+                });
+                return response.trim();
+            }
+        }
+
+        return "Dazu konnte ich in der Kegelabgabenordnung leider keine direkte Regel finden. Versuche nach konkreten Begriffen wie 'Kalle', 'Klingel', 'König', 'Zu spät' oder einem Spielnamen zu fragen.";
+    }
 </script>
 </body>
 </html>
