@@ -186,17 +186,50 @@
             color: var(--text);
         }
 
-        .card-content ul {
+        /* ECHTE GESETZES-STRUKTUR / NUMMERIERUNG */
+        .law-list {
+            list-style: none;
+            padding-left: 0;
             margin: 0;
-            padding-left: 18px;
         }
 
-        .card-content li {
-            margin-bottom: 6px;
+        .law-list > li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 32px;
         }
 
-        .card-content li:last-child {
-            margin-bottom: 0;
+        .law-list > li::before {
+            content: attr(data-num);
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-weight: 700;
+            color: var(--primary);
+            width: 28px;
+        }
+
+        .sub-law-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 6px 0 0 0;
+        }
+
+        .sub-law-list > li {
+            margin-bottom: 4px;
+            position: relative;
+            padding-left: 24px;
+            font-size: 0.88rem;
+        }
+
+        .sub-law-list > li::before {
+            content: attr(data-num);
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-weight: 600;
+            color: var(--text);
+            opacity: 0.85;
         }
 
         .highlight-box {
@@ -272,8 +305,8 @@
             background: var(--surface);
             width: 100%;
             max-width: 500px;
-            height: 75vh;
-            max-height: 650px;
+            height: 80vh;
+            max-height: 700px;
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
             box-shadow: 0 -8px 24px rgba(0,0,0,0.25);
@@ -356,7 +389,7 @@
         }
 
         .msg {
-            max-width: 82%;
+            max-width: 85%;
             padding: 10px 14px;
             border-radius: 14px;
             font-size: 0.9rem;
@@ -384,6 +417,31 @@
             color: #ffffff;
             align-self: flex-end;
             border-bottom-right-radius: 2px;
+        }
+
+        /* VORGEFERTIGTE FRAGEN BUTTONS IN DER NACHRICHT */
+        .preset-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .preset-btn {
+            background: rgba(227, 0, 11, 0.15);
+            color: #ffffff;
+            border: 1px solid var(--primary);
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .preset-btn:hover, .preset-btn:active {
+            background: var(--primary);
+            color: #ffffff;
         }
 
         /* CHAT INPUT AREA */
@@ -440,7 +498,7 @@
         </div>
     </div>
 
-    <!-- GESETZESTEXT -->
+    <!-- GESETZESTEXT ENTSPRECHEND DES PDF-FORMATS -->
     <div class="content-container" id="scroll-area">
         <div class="law-container">
 
@@ -448,119 +506,143 @@
             <div id="p1" class="section-title">§ 1 Strafen</div>
 
             <div class="card">
-                <h3>Allgemeiner Kegelbeginn</h3>
+                <h3>I. Kegelbeginn</h3>
                 <div class="card-content">
-                    <ul>
-                        <li>Kegelbeginn ist durch Eröffnung des ersten Wurfes des Kallenkönigs beim ersten Spiel.</li>
-                        <li>Die Reihenfolge (im oder gegen den Uhrzeigersinn) entscheidet der Kallenkönig.</li>
-                        <li>Vorher muss der König keine Krone tragen und es gibt keine Strafen.</li>
-                        <li>Ist der Kallenkönig nicht anwesend, übernimmt dies der Schlechteste anwesende vom vergangenen Kegeln.</li>
+                    <p style="margin-top:0;">Kegelbeginn ist durch Eröffnung des ersten Wurfes des Kallenkönigs beim ersten Spiel.</p>
+                    <ul class="law-list">
+                        <li data-num="(1)">Die Reihenfolge (im oder gegen den Uhrzeigersinn) entscheidet der Kallenkönig.</li>
+                        <li data-num="(2)">Vorher muss der König keine Krone tragen und es gibt keine Strafen.</li>
+                        <li data-num="(3)">Ist der Kallenkönig nicht anwesend, übernimmt dies der schlechteste anwesende vom vergangenen Kegeln.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Kallen</h3>
+                <h3>II. Kallen</h3>
                 <div class="card-content">
-                    <ul>
-                        <li>Eine Kalle kostet <b>0,50 €</b>.</li>
-                        <li>Punkte, die trotz Kalle geworfen wurden, zählen.</li>
-                        <li>Ein Wurf kann mehrere Kallen-Strafen verursachen, indem die Kugel aus der Kalle raus und wieder zurück in die Kalle rollt.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)">Eine Kalle kostet <b>0,50 €</b>.</li>
+                        <li data-num="(2)">Punkte, die trotz Kalle geworfen wurden, zählen.</li>
+                        <li data-num="(3)">Ein Wurf kann mehrere Kallen-Strafen verursachen, in dem die Kugel aus der Kalle raus und wieder zurück in die Kalle rollt.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Verlorenes Spiel</h3>
+                <h3>III. Verlorenes Spiel</h3>
                 <div class="card-content">
-                    <ul>
-                        <li>Ein verlorenes Spiel kostet <b>1,00 €</b>.</li>
-                        <li>Es verlieren immer mindestens 50 % der Teilnehmer.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)">Ein verlorenes Spiel kostet <b>1,00 €</b>.</li>
+                        <li data-num="(2)">Es verlieren immer mindestens 50 % der Teilnehmer.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Kugeln gebracht</h3>
+                <h3>IV. Kugeln gebracht</h3>
                 <div class="card-content">
-                    <ul>
-                        <li>Eine gebrachte Kugel kostet <b>2,00 €</b>.</li>
-                        <li>Eine Kugel gilt als gebracht, wenn dem Spieler, der an der Reihe ist, die Kugel auf den Platz gelegt wird, ohne dass dieser die Kugel entgegennimmt.</li>
-                        <li>Nimmt der Spieler die Kugel erst hinter der vorderen Tischkante an, so muss er diese für den entsprechenden Wurf verwenden.</li>
-                        <li>Wird einem Spieler eine Kugel gebracht, welcher nicht an der Reihe ist, so wird die Strafe dem Kugel-Bringer vermerkt.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)">Eine gebrachte Kugel kostet <b>2,00 €</b>.</li>
+                        <li data-num="(2)">Eine Kugel gilt als gebracht, wenn dem Spieler, der an der Reihe ist, die Kugel auf den Platz gelegt wird, ohne dass dieser die Kugel entgegennimmt.</li>
+                        <li data-num="(3)">Nimmt der Spieler die Kugel erst hinter der vorderen Tischkante an, so muss er diese für den entsprechenden Wurf verwenden.</li>
+                        <li data-num="(4)">Wird einem Spieler eine Kugel gebracht, welcher nicht an der Reihe ist, so wird die Strafe dem Kugel-Bringer vermerkt.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Klingel</h3>
+                <h3>V. Klingel</h3>
                 <div class="card-content">
-                    <ul>
-                        <li>Das Klingeln beim Werfen kostet <b>1,00 €</b>.</li>
-                        <li>Punkte, die trotz Klingel geworfen wurden, zählen.</li>
-                        <li>Die Strafe erfolgt, wenn die Mehrheit ein Geräusch wahrgenommen hat.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)">Das Klingeln beim Werfen kostet <b>1,00 €</b>.</li>
+                        <li data-num="(2)">Punkte, die trotz Klingel geworfen wurden, zählen.</li>
+                        <li data-num="(3)">Die Strafe erfolgt, wenn die Mehrheit ein Geräusch wahrgenommen hat.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Bilder</h3>
+                <h3>VI. Bilder</h3>
                 <div class="card-content">
-                    <ul>
-                        <li>Kegelt ein Spieler eines der beiden Bilder (z.B. Vorzeichen / Stina / Kackstuhl), kostet dies <b>0,50 €</b> Strafe.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)">Kegelt ein Spieler eins der beiden Bilder (Stina / Kackstuhl), kostet dies <b>0,50 €</b> Strafe.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Langsames Werfen / Einholen</h3>
+                <h3>VII. Langsames Werfen</h3>
                 <div class="card-content">
-                    <ul>
-                        <li>Eine eingeholte Kugel kostet <b>5,00 €</b>.</li>
-                        <li>Eine Kugel gilt als eingeholt, wenn der Läufer das Ende der Bahn abklatscht, bevor die Kugel den ersten Kegel berührt.</li>
-                        <li>Schafft der Läufer es nicht regelkonform schneller zu sein als die Kugel, kassiert er die Strafe.</li>
-                        <li>Die Kugel darf vom Läufer nicht berührt werden.</li>
-                        <li>Der Läufer muss beim Werfen der Kugel hinter dem Werfenden stehen.</li>
-                        <li>Berührungen oder Behinderungen zwischen Spielern kosten <b>10,00 €</b>.</li>
-                        <li>Punkte, die trotz Einholen geworfen wurden, zählen.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)">Eine eingeholte Kugel kostet <b>5,00 €</b>.</li>
+                        <li data-num="(2)">Eine Kugel gilt als eingeholt, wenn der Läufer das Ende der Bahn abklatscht bevor die Kugel den ersten Kegel berührt.</li>
+                        <li data-num="(3)">Schafft der Läufer es nicht regelkonform schneller zu sein als die Kugel, kassiert er die Strafe.
+                            <ul class="sub-law-list">
+                                <li data-num="i)">Die Kugel darf vom Läufer nicht berührt werden.</li>
+                                <li data-num="ii)">Der Läufer muss beim Werfen der Kugel hinter dem Werfenden stehen.</li>
+                            </ul>
+                        </li>
+                        <li data-num="(4)">Berührungen oder Behinderungen zwischen Spielern kosten <b>10,00 €</b>.</li>
+                        <li data-num="(5)">Punkte, die trotz Einholen geworfen wurden, zählen.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Zu spät kommen</h3>
+                <h3>VIII. Zu spät kommen</h3>
                 <div class="card-content">
-                    <ul>
-                        <li>Unentschuldigtes Zu-Spät-Kommen kostet <b>10,00 €</b>.</li>
-                        <li>Zu spät ist jeder, der 5 Minuten nach Beginn nicht auf der Kegelbahn ist.</li>
-                        <li>Zu-Spät-Kommen kann bis 24 Stunden vorher in der WhatsApp-Gruppe straffrei angekündigt werden.</li>
-                        <li>Wer zu spät kommt, bekommt den aufgerundeten Mittelwert der Kallen und verlorenen Spiele zum Zeitpunkt der Ankunft.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)">Unentschuldigtes zu spät kommen kostet <b>10,00 €</b>.</li>
+                        <li data-num="(2)">Zu spät ist jeder, der 5 Minuten nach Beginn nicht auf der Kegelbahn ist.</li>
+                        <li data-num="(3)">Zu spät kommen kann bis 24 Stunden vorher in der WhatsApp-Gruppe straffrei angekündigt werden.</li>
+                        <li data-num="(4)">Wer zu spät kommt, bekommt den aufgerundeten Mittelwert der Kallen und verlorenen Spiele zum Zeitpunkt der Ankunft.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Nicht Erscheinen</h3>
+                <h3>IX. Nicht Erscheinen</h3>
                 <div class="card-content">
-                    <ul>
-                        <li>Unentschuldigtes Nicht-Erscheinen kostet den <b>doppelten Durchschnitt</b> der Strafen der Teilnehmenden.</li>
-                        <li>Nicht-Erscheinen kann bis zu 7 Tage vorher in der WhatsApp-Gruppe straffrei angekündigt werden.</li>
-                        <li>Entschuldigtes Nicht-Erscheinen nach der 7-Tage-Frist kostet den <b>einfachen Durchschnitt</b> der Strafen der Teilnehmenden.</li>
-                        <li>Ausnahme besteht, wenn der Betroffene eine AU für den Tag hat.</li>
-                        <li>Das Nicht-Erscheinen des Kallen-Königs ist in §3 geregelt und betrifft diese Regeln nicht.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)">Unentschuldigtes nicht erscheinen kostet den <b>doppelten Durchschnitt</b> der Strafen der Teilnehmenden.</li>
+                        <li data-num="(2)">Nicht erscheinen kann bis zu 7 Tage vorher in der WhatsApp-Gruppe straffrei angekündigt werden.</li>
+                        <li data-num="(3)">Entschuldigtes nicht erscheinen nach der 7 Tage Frist kostet den <b>Durchschnitt</b> der Strafen der Teilnehmenden.</li>
+                        <li data-num="(4)">Ausnahme besteht, wenn der Betroffene eine AU für den Tag hat.</li>
+                        <li data-num="(5)">Das nicht erscheinen des Kallen-Königs ist in §3 I. (3) geregelt und betrifft diesen nicht.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Unsportliches Verhalten</h3>
+                <h3>X. Unsportliches Verhalten</h3>
                 <div class="card-content">
-                    <ul>
-                        <li><b>Reihenfolge nicht einhalten:</b> Wirft ein Spieler, welcher nicht an der Reihe ist, kostet dies <b>1,00 €</b>.</li>
-                        <li><b>Glas umkippen:</b> Wird ein Glas umgekippt, zahlt der Verursacher <b>1,00 € je Anwesenden</b> als Strafe.</li>
-                        <li><b>Kegelbahn:</b> Bringt ein Spieler die Bahn nach seinem Wurf nicht wieder in den Zustand, dass der Nächste werfen kann, kostet dies <b>5,00 €</b>.</li>
-                        <li><b>Tafel:</b> Schreibt ein Spieler seinen Wurf nicht richtig an die Tafel (Position und Zahl) und der nächste Spieler wirft, kostet dies <b>1,00 €</b>.</li>
-                        <li><b>Vorzeitig gehen:</b> Geht ein Spieler, bevor das letzte Spiel angefangen hat, kostet dies <b>5,00 €</b>. Zudem wird König, wer zum Zeitpunkt des Verlassens des ersten Teilnehmers die meisten Kallen hat.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)"><b>Reihenfolge nicht einhalten:</b>
+                            <ul class="sub-law-list">
+                                <li data-num="i)">Wirft ein Spieler, welcher nicht an der Reihe ist, kostet dies <b>1,00 €</b>.</li>
+                            </ul>
+                        </li>
+                        <li data-num="(2)"><b>Glas umkippen:</b>
+                            <ul class="sub-law-list">
+                                <li data-num="i)">Wird ein Glas umgekippt, zahlt der Verursacher <b>1,00 € je Anwesenden</b> als Strafe.</li>
+                            </ul>
+                        </li>
+                        <li data-num="(3)"><b>Kegelbahn:</b>
+                            <ul class="sub-law-list">
+                                <li data-num="i)">Bringt ein Spieler die Bahn nach seinem Wurf nicht wieder in den Zustand, dass der Nächste werfen kann, so kostet dies <b>5,00 €</b>.</li>
+                            </ul>
+                        </li>
+                        <li data-num="(4)"><b>Tafel:</b>
+                            <ul class="sub-law-list">
+                                <li data-num="i)">Schreibt ein Spieler seinen Wurf nicht richtig an die Tafel (Position und Zahl), und der nächste Spieler wirft, so kostet dies <b>1,00 €</b>.</li>
+                            </ul>
+                        </li>
+                        <li data-num="(5)"><b>Vorzeitig gehen:</b>
+                            <ul class="sub-law-list">
+                                <li data-num="i)">Geht ein Spieler, bevor das letzte Spiel angefangen hat, kostet dies <b>5,00 €</b>.</li>
+                                <li data-num="ii)">Zudem wird König, wer zum Zeitpunkt des Verlassens des ersten Teilnehmers die meisten Kallen hat.</li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -570,120 +652,174 @@
             <div id="p2" class="section-title">§ 2 Spiele</div>
 
             <div class="card">
-                <h3>Allgemeine Spielregeln</h3>
+                <h3>I. Allgemeines</h3>
                 <div class="card-content">
-                    <p>Geht die Kugel durch die Kegel und/oder wird kein Kegel getroffen, wird der Wurf wie eine Kalle gewertet.</p>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Auf Ziel: Große Hausnummer</h3>
-                <div class="card-content">
-                    Jeder Spieler hat 3 Würfe und sortiert diese auf eine der drei Positionen. Die größten Hausnummern gewinnen. Eine Kalle wird als 0 gewertet.
-                    <div class="highlight-box">⚡ <b>Blitz-KO:</b> Genau 999 führt zum sofortigen Sieg; alle anderen verlieren.</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Auf Ziel: Kleine Hausnummer</h3>
-                <div class="card-content">
-                    Jeder Spieler hat 3 Würfe und sortiert diese auf eine der drei Positionen. Die kleinsten Hausnummern gewinnen. Eine Kalle wird als 9 gewertet.
-                    <div class="highlight-box">⚡ <b>Blitz-KO:</b> Genau 111 führt zum sofortigen Sieg; alle anderen verlieren.</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Auf Ziel: Mittlere Hausnummer</h3>
-                <div class="card-content">
-                    Jeder Spieler hat 3 Würfe und sortiert diese auf eine der drei Positionen. Gewonnen hat, wer die niedrigste Differenz zu 555 hat. Eine Kalle wird als 0 gewertet.
-                    <div class="highlight-box">⚡ <b>Blitz-KO:</b> Genau 555 führt zum sofortigen Sieg; alle anderen verlieren.</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Auf Ziel: 126</h3>
-                <div class="card-content">
-                    Jeder Spieler hat 3 Würfe. Wird eine 1, 2 oder 6 geworfen, muss diese an die entsprechende Position gesetzt werden. Eine Kalle zählt als 9. Die niedrigste Differenz zu 126 gewinnt.
-                    <div class="highlight-box">⚡ <b>Blitz-KO:</b> Genau 126 führt zum sofortigen Sieg; alle anderen verlieren.</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Power Kegeln</h3>
-                <div class="card-content">
-                    Die Spieler werden in zwei Teams aufgeteilt. Jedes Team darf x (vorher festgelegte) Minuten kegeln. Das Team mit den meisten Punkten gewinnt. Optional mit Abräumen.
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Fuchsjagd</h3>
-                <div class="card-content">
-                    Reihum ist ein Spieler Fuchs, alle anderen sind Jäger. Der Fuchs wirft zuerst 2x, dann ein Jäger, danach abwechselnd. Schafft ein Jäger den Fuchs einzuholen, verliert der Fuchs. Kalle = 0.
-                    <div class="highlight-box">🏆 Schafft der Fuchs 21 Punkte, verlieren alle Jäger.</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Einsacken</h3>
-                <div class="card-content">
-                    Aufteilung in zwei Teams. Das Team, welches zuerst exakt 51 Punkte erreicht, gewinnt. Es wird reihum geworfen, bis man einsackt.
-                    <div class="highlight-box">⚠️ Bei Kalle, einer 5 oder >51 verfallen alle Punkte der Runde und der Zug wechselt.</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Einpacken</h3>
-                <div class="card-content">
-                    Aufteilung in zwei Teams. Zuerst exakt 51 Punkte gewinnt. Im Team wird geworfen, bis man einpackt.
-                    <div class="highlight-box">⚠️ Bei Kalle, weniger Punkten als der Vormann oder >51 verfallen alle Punkte der Runde und der Zug wechselt.</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Wir kegeln im Dreieck</h3>
-                <div class="card-content">
-                    Namen stehen im Kreis. Jeder Wurf muss vom Nachfolger überworfen werden. Gelingt dies nicht, gibt es einen Strich. Drei Striche bilden ein Dreieck (Verloren). Nach dem Wurf wird gemäß Punktzahl im Kreis weitergezählt. Spiel endet, sobald die 50%-Verliererquote erreicht ist.
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Tag und Nacht</h3>
-                <div class="card-content">
-                    Jeder Spieler hat 4 Würfe. Auswertung: (Wurf 1 + 3) minus (Wurf 2 + 4). 
-                    <ul>
-                        <li>Negatives Ergebnis = Automatischer Verlust (unabhängig von Quote).</li>
-                        <li>Kalle = 9 Punkte Abzug bzw. 0 Punkte Plus.</li>
-                        <li>Höchste Summe gewinnt.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)">Geht die Kugel durch die Kegel und/oder wird kein Kegel getroffen, wird der Wurf wie eine Kalle gewertet.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Sarg-Kegeln</h3>
+                <h3>II. Auf Ziel</h3>
                 <div class="card-content">
-                    Namen im Kreis, Abräumen an. Der Erste wirft in die Vollen. Der Nachfolgende muss mind. 1 Kegel treffen, sonst droht ein Sargstrich. Bei 6 Strichen (Sarg `<=>`) ist man raus.
-                    <ul>
-                        <li>Wer abräumt, entfernt einen eigenen Strich (oder erhält ein Plus).</li>
-                        <li>Wer nicht abräumen kann, bekommt einen Strich, wenn der Nachfolgende abräumt.</li>
+                    <p style="margin-top:0;"><b>(1) Große Hausnummer:</b></p>
+                    <ul class="sub-law-list" style="margin-bottom:10px;">
+                        <li data-num="i.">Jeder Spieler hat 3 Würfe.</li>
+                        <li data-num="ii.">Jeder sortiert seine Würfe auf eine der drei Positionen.</li>
+                        <li data-num="iii.">Die größten Hausnummern gewinnen.</li>
+                        <li data-num="iv.">Eine Kalle wird als 0 gewertet.</li>
+                        <li data-num="v.">Hat ein Spieler genau 999 geworfen, führt dies zum Blitz-KO und alle anderen verlieren.</li>
+                    </ul>
+
+                    <p><b>(2) Kleine Hausnummer:</b></p>
+                    <ul class="sub-law-list" style="margin-bottom:10px;">
+                        <li data-num="i.">Jeder Spieler hat 3 Würfe.</li>
+                        <li data-num="ii.">Jeder sortiert seine Würfe auf eine der drei Positionen.</li>
+                        <li data-num="iii.">Die kleinsten Hausnummern gewinnen.</li>
+                        <li data-num="iv.">Eine Kalle wird als 9 gewertet.</li>
+                        <li data-num="v.">Hat ein Spieler genau 111 geworfen, führt dies zum Blitz-KO und alle anderen verlieren.</li>
+                    </ul>
+
+                    <p><b>(3) Mittlere Hausnummer:</b></p>
+                    <ul class="sub-law-list" style="margin-bottom:10px;">
+                        <li data-num="i.">Jeder Spieler hat 3 Würfe.</li>
+                        <li data-num="ii.">Jeder sortiert seine Würfe auf eine der drei Positionen.</li>
+                        <li data-num="iii.">Die Spieler, die die niedrigste Differenz zu 555 haben, gewinnen.</li>
+                        <li data-num="iv.">Eine Kalle wird als 0 gewertet.</li>
+                        <li data-num="v.">Hat ein Spieler genau 555 geworfen, führt dies zum Blitz-KO und alle anderen verlieren.</li>
+                    </ul>
+
+                    <p><b>(4) 126:</b></p>
+                    <ul class="sub-law-list">
+                        <li data-num="i.">Jeder Spieler hat 3 Würfe.</li>
+                        <li data-num="ii.">Jeder sortiert seine Würfe auf eine der drei Positionen.</li>
+                        <li data-num="iii.">Wird eine 1, 2 oder 6 geworfen, muss diese an die entsprechende Position gesetzt werden.</li>
+                        <li data-num="iv.">Eine Kalle wird als 9 gewertet.</li>
+                        <li data-num="v.">Die Spieler, die die niedrigste Differenz zu 126 haben, gewinnen.</li>
+                        <li data-num="vi.">Hat ein Spieler genau 126 geworfen, führt dies zum Blitz-KO und alle anderen verlieren.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Busfahrer</h3>
+                <h3>III. Power Kegeln</h3>
                 <div class="card-content">
-                    10 Busse (Linien 1-9 & Kalle) an der Tafel. Jede Zahl weist den Spieler einem Bus zu (Kallen-Bus gesperrt). Ab Runde 2 erhält die geworfene Buslinie einen Reifen. Es verlieren die Insassen des Busses, der zuerst 6 Reifen hat (Kallen-Bus 12).
+                    <ul class="law-list">
+                        <li data-num="(1)">Die Spieler werden in zwei Teams aufgeteilt.</li>
+                        <li data-num="(2)">Jedes Team darf x (vorher festgelegte) Minuten kegeln.</li>
+                        <li data-num="(3)">Das Team mit den meisten Punkten gewinnt.</li>
+                        <li data-num="(4)">Optional mit Abräumen.</li>
+                    </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Anrufen</h3>
+                <h3>IV. Fuchsjagd</h3>
                 <div class="card-content">
-                    <ul>
-                        <li><b>Vorrunde:</b> 1 Wurf auf die Vollen bestimmt die Telefonnummer (bei Kalle wird wiederholt).</li>
-                        <li><b>Hauptrunde:</b> 2 Würfe pro Runde. Wurf 1 = Telefonnummer. Wurf 2 = Anzahl Striche (0,10 € / Strich) für den Besitzer dieser Telefonnummer.</li>
-                        <li>Keine gültige Nummer im 1. Wurf? Striche aus 2. Wurf gelten für einen selbst.</li>
-                        <li>Kalle im 2. Wurf = 9 Striche Strafe.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)">Die Spieler sind reihum Fuchs, alle anderen sind in der Runde Jäger.</li>
+                        <li data-num="(2)">Der Fuchs wirft zuerst zweimal, dann ein Jäger und ab da abwechselnd Fuchs und ein Jäger.</li>
+                        <li data-num="(3)">Der Jäger geht reihum, schafft er es den Fuchs (in der Punktzahl) einzuholen, so verliert der Fuchs sein Spiel.</li>
+                        <li data-num="(4)">Eine Kalle wird als 0 gewertet.</li>
+                        <li data-num="(5)">Schafft der Fuchs es 21 Punkte zu erreichen, so verlieren alle anderen ein Spiel.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>V. Einsacken</h3>
+                <div class="card-content">
+                    <ul class="law-list">
+                        <li data-num="(1)">Die Spieler werden in zwei Teams aufgeteilt.</li>
+                        <li data-num="(2)">Gewonnen hat das Team, welches als erstes genau 51 Punkte erreicht hat. Spieler des anderen Teams bekommen ein verlorenes Spiel.</li>
+                        <li data-num="(3)">Im Team wird geworfen (nach der Reihe) bis man die Punkte einsackt, mit der addierten Punktzahl wird in der nächsten Runde weiter geworfen.</li>
+                        <li data-num="(4)">Wirft ein Spieler eines Teams eine Kalle, eine 5 oder über die Summe von 51, so endet der Zug des Teams, alle in der Runde geworfenen Punkte verfallen und das gegnerische Team ist am Zug.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>VI. Einpacken</h3>
+                <div class="card-content">
+                    <ul class="law-list">
+                        <li data-num="(1)">Die Spieler werden in zwei Teams aufgeteilt.</li>
+                        <li data-num="(2)">Gewonnen hat das Team, welches als erstes genau 51 Punkte erreicht hat. Spieler des anderen Teams bekommen ein verlorenes Spiel.</li>
+                        <li data-num="(3)">Im Team wird geworfen (nach der Reihe) bis man die Punkte einpackt, mit der addierten Punktzahl wird in der nächsten Runde weiter geworfen.</li>
+                        <li data-num="(4)">Wirft ein Spieler eines Teams eine Kalle, weniger als sein Vormann oder über die Summe von 51, so endet der Zug des Teams, alle in der Runde geworfenen Punkte verfallen und das gegnerische Team ist am Zug.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>VII. Wir kegeln im Dreieck</h3>
+                <div class="card-content">
+                    <ul class="law-list">
+                        <li data-num="(1)">Die Namen der Spieler werden im Kreis aufgeschrieben.</li>
+                        <li data-num="(2)">Jeder Wurf muss vom Nachfolger überworfen werden.</li>
+                        <li data-num="(3)">Schafft ein Spieler dies nicht, bekommt er einen Strich um seinen Namen, bis ein Dreieck den Namen einrahmt, dann hat der Spieler verloren.</li>
+                        <li data-num="(4)">Nach dem Wurf wird in Anzahl der Punkte die Namen durchgezählt, um den nächsten Werfenden zu ermitteln.</li>
+                        <li data-num="(5)">Spiel endet mit dem Verlierer, der die 50% Quote reißt.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>VIII. Tag und Nacht</h3>
+                <div class="card-content">
+                    <ul class="law-list">
+                        <li data-num="(1)">Jeder Spieler hat 4 Würfe.</li>
+                        <li data-num="(2)">Am Ende des Spiels werden die Würfe 1 und 3 addiert und mit den Würfen 2 und 4 subtrahiert.</li>
+                        <li data-num="(3)">Alle Spieler, die ein negatives Ergebnis haben, verlieren automatisch unabhängig von der 50% Quote.</li>
+                        <li data-num="(4)">Bei einer Kalle werden 9 Punkte subtrahiert bzw. 0 Punkte addiert, je nach Wurf.</li>
+                        <li data-num="(5)">Die Spieler, die die höchste Summe haben, gewinnen.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>IX. Sarg-Kegeln</h3>
+                <div class="card-content">
+                    <ul class="law-list">
+                        <li data-num="(1)">Die Namen der Spieler werden im Kreis aufgeschrieben, Abräumen an der Bahn eingeschaltet.</li>
+                        <li data-num="(2)">Der erste Kegler wirft auf die Vollen. Der nächste muss mindestens einen Kegel treffen. Wird dies nicht geschafft, erhält er einen Sargstrich um seinen Namen.</li>
+                        <li data-num="(3)">Hat ein Spieler sechs Sargstriche gesammelt, ist er raus (ein Sarg sieht wie folgt aus `<=>`).</li>
+                        <li data-num="(4)">Werden alle verbleibenden Kegel abgeräumt, erhält der vorherige Spieler, der nicht abräumen konnte, einen Sargstrich. Dem Kegler, der abgeräumt hat, wird ein Sargstrich entfernt, oder wenn er keine Striche hat, ein Plus aufgeschrieben. Ein Plus kann mit einem Sargstrich verrechnet werden.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>X. Busfahrer</h3>
+                <div class="card-content">
+                    <ul class="law-list">
+                        <li data-num="(1)">An der Tafel werden 10 Busse (Rechtecke) mit den Buslinien 1-9 und Kalle angezeichnet.</li>
+                        <li data-num="(2)">Es wird reihum auf die Vollen geworfen. Die geworfene Zahl entscheidet, mit welchem Bus die Person fährt (Namen werden in die Busse notiert).</li>
+                        <li data-num="(3)">Da der Kallen-Bus nicht befahren werden kann, wird so lange geworfen, bis jeder Spieler einen Bus von 1-9 hat.</li>
+                        <li data-num="(4)">Ab der zweiten Runde bekommt die Buslinie einen Reifen, deren Nummer gekegelt wurde.</li>
+                        <li data-num="(5)">Es verlieren die Spieler, die nicht im Bus sind, welcher als erstes 6 (Kallen-Bus 12) Reifen hat.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>XI. Anrufen</h3>
+                <div class="card-content">
+                    <p style="margin-top:0;"><b>(1) Vorrunde:</b></p>
+                    <ul class="sub-law-list" style="margin-bottom:10px;">
+                        <li data-num="i.">Jeder Kegler hat einen Wurf auf die Vollen und legt somit eine Telefonnummer fest, die neben seinem Namen auf der Tafel notiert wird.</li>
+                        <li data-num="ii.">Ist der erste Wurf eine Kalle, wird erneut geworfen, bis eine Zahl von 1-9 gekegelt wird.</li>
+                        <li data-num="iii.">Die Gemeinschaft legt die Anzahl der Hauptrunden fest.</li>
+                    </ul>
+
+                    <p><b>(2) Hauptrunde:</b></p>
+                    <ul class="sub-law-list">
+                        <li data-num="i.">Jeder Kegler hat pro Hauptrunde zwei Würfe auf die Vollen, unabhängig vom ersten Wurf.</li>
+                        <li data-num="ii.">Der erste Wurf bestimmt die Telefonnummer.</li>
+                        <li data-num="iii.">Der zweite Wurf bestimmt die Anzahl an Strichen, wobei ein Strich 0,10 € entspricht.</li>
+                        <li data-num="iv.">Jeder Kegler, der die Telefonnummer aus dem ersten Wurf hat, bekommt Striche in Höhe des zweiten Wurfes.</li>
+                        <li data-num="v.">Sollte mit dem ersten Wurf eine Kalle oder keine gültige Rufnummer geworfen werden, so wird mit dem zweiten Wurf die Anzahl an Strichen für den Kegler selbst bestimmt.</li>
+                        <li data-num="vi.">Wird mit dem zweiten Wurf eine Kalle geworfen oder kein Kegel getroffen, so bekommt der Kegler 9 Striche.</li>
                     </ul>
                 </div>
             </div>
@@ -693,46 +829,64 @@
             <div id="p3" class="section-title">§ 3 Sonstiges</div>
 
             <div class="card">
-                <h3>Kallen-König & Krone</h3>
+                <h3>I. Kallen-König und seine Krone</h3>
                 <div class="card-content">
-                    <ul>
-                        <li>Der Kallen-König sorgt für seine Krone. Keine Krone dabei = <b>5,00 €</b>.</li>
-                        <li>Absetzen der Krone während des Kegelns = <b>1,00 €</b> pro Absetzen.</li>
-                        <li>Fehlen beim Kegeln = <b>5,00 € + doppelter Strafen-Durchschnitt</b> (Ausnahme: AU).</li>
-                        <li>Straffreie Absage für den Folge-Termin am Krönungstag möglich.</li>
-                        <li><b>Neuer König:</b> Meiste Kallen am Ende des Abends. Bei Gleichstand Auskegeln (Münzwurf bestimmt Reihenfolge, wer am wenigsten trifft/Kalle wirft ist König).</li>
-                        <li><b>Thronfolger-Regelung:</b> Fehlt der König 1x, bleibt er ohne Antreten König. Fehlt er ein 2. Mal in Folge, wird der Tagestiefste mit den meisten Kallen gekrönt. Übergabe erfolgt zu „God save the King“.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)">Der Kallen-König hat für seine Krone zu sorgen, bringt er keine zum Kegeln mit, kostet dies <b>5,00 €</b>.</li>
+                        <li data-num="(2)">Während des Kegelns kostet jedes Absetzen der Krone <b>1,00 €</b>.</li>
+                        <li data-num="(3)">Erscheint der Kallen-König nicht zum Kegeln, kostet dies <b>5,00 €</b> und zusätzlich den <b>doppelten Durchschnitt</b> der Strafen der Teilnehmenden.
+                            <ul class="sub-law-list">
+                                <li data-num="i.">Ausnahme besteht, wenn der Betroffene eine AU für den Tag hat.</li>
+                                <li data-num="ii.">Außerdem kann der König am Tag der Krönung für den Folgetermin straffrei absagen.</li>
+                            </ul>
+                        </li>
+                        <li data-num="(4)">Neuer Kallen-König wird, wer am Ende der Zeit die meisten Kallen hat.
+                            <ul class="sub-law-list">
+                                <li data-num="i.">Besteht Gleichstand zwischen 2 oder mehr Spielern, wird ausgekegelt wer König wird:
+                                    <br>1. Ein Münzwurf entscheidet die Reihenfolge.
+                                    <br>2. Geworfen wird auf die Vollen, der Spieler, der am wenigsten Kegel trifft, ist Kallen-König.
+                                    <br>3. Fällt eine Kalle, so ist dieser Spieler automatisch Kallen-König.
+                                </li>
+                            </ul>
+                        </li>
+                        <li data-num="(5)">Der König überreicht zu „God save the King“ die Krone an seinen Nachfolger.</li>
+                        <li data-num="(6)">Beim ersten Fehlen des amtierenden Kallen-Königs wird kein neuer König gekürt und der König ist, ohne anzutreten, auch beim nächsten Kegeln König.</li>
+                        <li data-num="(7)">Fehlt der Kallen-König auch beim zweiten Kegeln nach Krönung, wird der Kegler mit den meisten Kallen zum neuen Kallen-König gekrönt.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Gastkegler</h3>
+                <h3>II. Gastkegler</h3>
                 <div class="card-content">
-                    <ul>
-                        <li>Teilnahme auf Vorschlag eines Mitglieds mit ¾-Mehrheit oder ohne Widerspruch.</li>
-                        <li>Gastkegler nehmen zu 100 % an Spielen und Strafen teil.</li>
-                        <li>Wird ein Gastkegler Kallen-König, muss er beim nächsten Mal mit Krone erscheinen.</li>
+                    <ul class="law-list">
+                        <li data-num="(1)">Gastkegler dürfen auf Vorschlag eines Mitglieds mit ¾ Mehrheit oder wenn kein Widerspruch besteht teilnehmen.</li>
+                        <li data-num="(2)">Gastkegler müssen zu 100% an Spielen und Strafen teilnehmen.</li>
+                        <li data-num="(3)">Wenn der Gastkegler Kallen-König ist, muss dieser beim nächsten Mal mit Krone erscheinen.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Anwesenheit ohne Teilnahme</h3>
+                <h3>III. Anwesenheit ohne Teilnahme</h3>
                 <div class="card-content">
-                    Kegelbrüder, die anwesend sind, aber ordnungsgemäß abgesagt haben und nicht teilnehmen, gelten als nicht anwesend und sind von allen Regeln befreit.
+                    <ul class="law-list">
+                        <li data-num="(1)">Kegelbrüder, die beim Kegeln anwesend sind, aber nicht teilnehmen und ordnungsgemäß abgesagt haben, sind von allen Regeln ausgenommen. Sie sind so zu behandeln, als wären sie nicht anwesend.</li>
+                    </ul>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Abstimmungen</h3>
+                <h3>IV. Abstimmungen</h3>
                 <div class="card-content">
-                    Entscheidungen und Änderungen an der Abgabenordnung werden mit einer einfachen Mehrheit der Anwesenden beschlossen.
+                    <ul class="law-list">
+                        <li data-num="(1)">Entscheidungen und Änderungen an der Abgabenordnung werden mit einer Mehrheit der Anwesenden beschlossen.</li>
+                    </ul>
                 </div>
             </div>
 
             <div class="footer-note">
-                KC Rakete – Offizielle Regelung
+                KC Rakete im Mai 2026
             </div>
 
             <div style="height: 30vh;"></div>
@@ -804,7 +958,7 @@
         }
     }
 
-    /* 3. DYNAMISCHES EXTRAHIEREN DER REGELN & SCHLAUERER SUCH-ALGORITHMUS */
+    /* 3. DYNAMISCHES EXTRAHIEREN DER REGELN & INTELLIGENTER BOT MIT RÜCKFRAGEN */
     let ruleIndex = [];
 
     function buildKnowledgeBaseFromDOM() {
@@ -835,30 +989,49 @@
         buildKnowledgeBaseFromDOM();
     });
 
-    function sendChatMessage() {
+    function sendChatMessage(customQuery = null) {
         const input = document.getElementById('chat-input');
-        const query = input.value.trim();
+        const query = customQuery || input.value.trim();
         if (!query) return;
 
         appendMessage(query, 'user');
-        input.value = '';
+        if (!customQuery) input.value = '';
 
         setTimeout(() => {
-            const answer = calculateBotResponse(query);
-            appendMessage(answer, 'bot');
-        }, 350);
+            processBotResponse(query);
+        }, 300);
     }
 
-    function appendMessage(text, sender) {
+    function appendMessage(text, sender, presets = null) {
         const container = document.getElementById('chat-messages');
         const msgDiv = document.createElement('div');
         msgDiv.className = `msg ${sender}`;
-        msgDiv.innerText = text;
+        
+        if (typeof text === 'string') {
+            msgDiv.innerText = text;
+        } else {
+            msgDiv.appendChild(text);
+        }
+
+        if (presets && presets.length > 0) {
+            const presetBox = document.createElement('div');
+            presetBox.className = 'preset-container';
+            
+            presets.forEach(presetText => {
+                const btn = document.createElement('button');
+                btn.className = 'preset-btn';
+                btn.innerText = `👉 ${presetText}`;
+                btn.onclick = () => sendChatMessage(presetText);
+                presetBox.appendChild(btn);
+            });
+            msgDiv.appendChild(presetBox);
+        }
+
         container.appendChild(msgDiv);
         container.scrollTop = container.scrollHeight;
     }
 
-    function calculateBotResponse(userQuery) {
+    function processBotResponse(userQuery) {
         if (!ruleIndex || ruleIndex.length === 0) {
             buildKnowledgeBaseFromDOM();
         }
@@ -867,9 +1040,11 @@
         const qTokens = qLower.match(/[a-zäöüß0-9]+/g) || [];
 
         if (qTokens.length === 0) {
-            return "Bitte gib eine Frage oder einen Suchbegriff ein.";
+            appendMessage("Bitte gib eine konkrete Frage oder ein Stichwort ein.", 'bot');
+            return;
         }
 
+        // Synonyme
         const synonymMap = {
             "preis": ["kostet", "kosten", "strafe", "€", "euro"],
             "preise": ["kostet", "kosten", "strafe", "€", "euro"],
@@ -879,8 +1054,8 @@
             "kallen": ["kalle"],
             "bier": ["glas"],
             "getränk": ["glas"],
-            "spät": ["pünktlich", "uhrzeit", "verspätung"],
-            "fehlen": ["abwesend", "nicht erscheinen", "krank"],
+            "spät": ["pünktlich", "uhrzeit", "verspätung", "zu spät"],
+            "fehlen": ["abwesend", "nicht erscheinen", "krank", "au"],
             "könig": ["krone", "kallen-könig"]
         };
 
@@ -890,10 +1065,12 @@
             let score = 0;
 
             qTokens.forEach(token => {
+                if (token.length < 3) return; // Ignoriere zu kurze Wörte (z.B. "ja", "in")
+
                 if (item.fullText.includes(token)) {
-                    score += 3;
+                    score += 4;
                     if (item.title.toLowerCase().includes(token)) {
-                        score += 5;
+                        score += 6;
                     }
                 }
 
@@ -913,22 +1090,39 @@
 
         matches.sort((a, b) => b.score - a.score);
 
+        // BOT IST SCHLAUER: Prüft Eindeutigkeit oder stellt gezielte Rückfragen
         if (matches.length > 0) {
-            const topMatch = matches[0].item;
+            const topScore = matches[0].score;
+
+            // Sehr eindeutiger Treffer
+            if (matches.length === 1 || topScore >= matches[1].score + 4) {
+                const match = matches[0].item;
+                appendMessage(`📍 ${match.title}:\n\n${match.text}`, 'bot');
+                return;
+            } 
             
-            if (matches.length === 1 || matches[0].score > matches[1].score + 2) {
-                return `📍 ${topMatch.title}:\n${topMatch.text}`;
-            } else {
-                let response = `Hier ist was ich zu "${userQuery}" gefunden habe:\n\n`;
-                const top2 = matches.slice(0, 2);
-                top2.forEach(m => {
-                    response += `👉 ${m.item.title}:\n${m.item.text}\n\n`;
-                });
-                return response.trim();
-            }
+            // Mehrere plausible Treffer -> Gezielte Rückfrage stellen statt falsch zu raten!
+            const ambiguousMatches = matches.filter(m => m.score >= topScore - 3).slice(0, 4);
+            const questionText = `Deine Frage ist noch etwas allgemein. Welches der folgenden Themen aus der Abgabenordnung meinst du genau?`;
+            const presetOptions = ambiguousMatches.map(m => m.item.title);
+
+            appendMessage(questionText, 'bot', presetOptions);
+            return;
         }
 
-        return "Dazu konnte ich in der Kegelabgabenordnung leider keine direkte Regel finden. Versuche nach konkreten Begriffen wie 'Kalle', 'Klingel', 'König', 'Zu spät' oder einem Spielnamen zu fragen.";
+        // Gar kein Treffer -> Hilfestellung mit vordefinierten Fragen aus dem Gesetz anbieten
+        const defaultQuestions = [
+            "Was kostet eine Kalle?",
+            "Wie viel Strafe zahlt man bei Zu spät kommen?",
+            "Was passiert wenn der Kallen-König fehlt?",
+            "Wie funktioniert das Spiel Anrufen?"
+        ];
+
+        appendMessage(
+            "Dazu konnte ich keine passende Regel finden. Meintest du eventuell eine dieser Fragen aus dem Gesetz?",
+            'bot', 
+            defaultQuestions
+        );
     }
 </script>
 </body>
