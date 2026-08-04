@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Kegel-Teams</title>
+    <style>
+        :root {
+            --bg: #f5f5f5;
+            --surface: #ffffff;
+            --primary: #e3000b; /* Rot */
+            --accent: #c0c0c0; /* Silber */
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --border: #d1d1d1;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #121212;
+                --surface: #1e1e1e;
+                --text-primary: #ffffff;
+                --text-secondary: #b0b0b0;
+                --border: #333333;
+                --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        /* Verhindert Zoom und Pan */
+        html, body { 
+            overflow: hidden; 
+            position: fixed; 
+            width: 100%; 
+            height: 100%; 
+            touch-action: none; 
+        }
+
+        body {
+            font-family: -apple-system, system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            user-select: none;
+            -webkit-user-select: none;
+            /* Verhindert das Verdecken durch die Notch */
+            padding-top: env(safe-area-inset-top);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: calc(10px + env(safe-area-inset-top));
+            left: 15px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+
+        h1 { margin: 20px 0; font-weight: 800; color: var(--primary); font-size: 1.6rem; text-transform: uppercase; }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            /* Berücksichtigt den Home-Indicator unten am iPhone */
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .card {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--accent);
+            text-align: center;
+            overflow-y: auto; /* Erlaubt Scrollen nur innerhalb der Card wenn nötig */
+            touch-action: pan-y;
+        }
+
+        .grid-players {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .menu-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: var(--bg);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+        }
+
+        .settings-box {
+            background: var(--accent);
+            color: #000;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .team-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .radio-btn { display: none; }
+
+        .radio-label {
+            padding: 8px 20px;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .radio-btn:checked + .radio-label {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .main-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+        }
+
+        .team-result-box {
+            margin-top: 10px;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: 10px;
+            text-align: left;
+            border-left: 5px solid var(--primary);
+        }
+
+        .team-title { color: var(--primary); font-weight: 900; font-size: 0.8rem; margin-bottom: 3px; }
+        .team-members { font-size: 1.1rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <a href="kcr_index.html" class="back-btn">&#8592;</a>
+
+    <h1>Kegel-Teams</h1>
+
+    <div class="container">
+        <div id="setupScreen" class="card">
+            <div class="settings-box">
+                <div style="font-weight: bold;">Anzahl Teams:</div>
+                <div class="team-selector">
+                    <input type="radio" name="tCount" id="t2" value="2" class="radio-btn" checked>
+                    <label for="t2" class="radio-label">2</label>
+                    <input type="radio" name="tCount" id="t3" value="3" class="radio-btn">
+                    <label for="t3" class="radio-label">3</label>
+                </div>
+            </div>
+
+            <div class="grid-players" id="pList"></div>
+            <button class="main-btn" onclick="generateTeams()">Teams losen</button>
+        </div>
+
+        <div id="resultScreen" class="card" style="display:none;">
+            <div id="teamResults"></div>
+            <button class="main-btn" style="background: var(--accent); color: #000; margin-top: 20px;" onclick="reset()">Neu auslosen</button>
+        </div>
+    </div>
+
+    <script>
+        const stamm = ["Christoph", "Fabian", "Jan", "Leonard", "Marvin", "Niklas", "Tobias", "Yannick", "Cengiz", "Julian", "Neitzke"];
+        const gaeste = ["Gastkegler1", "Gastkegler2"];
+
+        function init() {
+            const pList = document.getElementById('pList');
+            // Sortiere Stammspieler alphabetisch
+            stamm.sort((a, b) => a.localeCompare(b));
+            
+            stamm.forEach(n => createCb(pList, n, true));
+            gaeste.forEach(n => createCb(pList, n, false));
+        }
+
+        function createCb(container, name, checked) {
+            const label = document.createElement('label');
+            label.className = 'menu-option';
+            label.innerHTML = `<input type="checkbox" value="${name}" ${checked?'checked':''}><span>${name}</span>`;
+            container.appendChild(label);
+        }
+
+        function generateTeams() {
+            const sel = document.querySelectorAll('#pList input:checked');
+            let p = Array.from(sel).map(c => c.value);
+            const nT = parseInt(document.querySelector('input[name="tCount"]:checked').value);
+
+            if(p.length < nT) return alert("Zu wenig Spieler!");
+
+            p.sort(() => Math.random() - 0.5);
+            const teams = Array.from({ length: nT }, () => []);
+            p.forEach((player, i) => teams[i % nT].push(player));
+
+            const res = document.getElementById('teamResults');
+            res.innerHTML = '';
+            
+            teams.forEach((t, i) => {
+                const b = document.createElement('div');
+                b.className = 'team-result-box';
+                b.innerHTML = `<div class="team-title">Team ${i+1}</div><div class="team-members">${t.join(', ')}</div>`;
+                res.appendChild(b);
+            });
+
+            document.getElementById('setupScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+        }
+
+        function reset() {
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('setupScreen').style.display = 'block';
+        }
+
+        init();
+    </script>
+</body>
+</html>
