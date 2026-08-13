@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Herzfrequenz Zonen</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        header {
+            margin-top: 10px;
+            margin-bottom: 4px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #888888;
+            margin-top: 4px;
+        }
+
+        .input-group {
+            background-color: #111111;
+            border: 1px solid #222222;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .label {
+            font-size: 14px;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .value {
+            font-size: 20px;
+            font-weight: 600;
+            font-mono: tabular-nums;
+        }
+
+        .unit {
+            font-size: 12px;
+            color: #666;
+            font-weight: normal;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #333333;
+            border-radius: 3px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -9px;
+        }
+
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #333333;
+            border-radius: 3px;
+        }
+
+        input[type=range]::-moz-range-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            border: none;
+        }
+
+        .zones-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .zone-card {
+            background-color: #111111;
+            border: 1px solid #222222;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .zone-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .zone-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .zone-desc {
+            font-size: 12px;
+            color: #666666;
+        }
+
+        .zone-range {
+            font-size: 16px;
+            font-weight: 600;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .z1 { border-left: 4px solid #8E8E93; }
+        .z2 { border-left: 4px solid #32ADE6; }
+        .z3 { border-left: 4px solid #30D158; }
+        .z4 { border-left: 4px solid #FF9F0A; }
+        .z5 { border-left: 4px solid #FF453A; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Herzfrequenz Zonen</h1>
+        <div class="subtitle">Berechnung nach Karvonen (HRR)</div>
+    </header>
+
+    <div class="input-group">
+        <div class="control">
+            <div class="control-header">
+                <span class="label">Ruhepuls</span>
+                <span class="value" id="val-rest">60 <span class="unit">BPM</span></span>
+            </div>
+            <input type="range" id="input-rest" min="30" max="100" value="60">
+        </div>
+
+        <div class="control">
+            <div class="control-header">
+                <span class="label">Maximalpuls</span>
+                <span class="value" id="val-max">185 <span class="unit">BPM</span></span>
+            </div>
+            <input type="range" id="input-max" min="130" max="220" value="185">
+        </div>
+    </div>
+
+    <div class="zones-list">
+        <div class="zone-card z1">
+            <div class="zone-info">
+                <div class="zone-title">Zone 1 · Regeneration</div>
+                <div class="zone-desc">Sehr leicht (50–60% HRR)</div>
+            </div>
+            <div class="zone-range" id="z1-range">0 - 0</div>
+        </div>
+
+        <div class="zone-card z2">
+            <div class="zone-info">
+                <div class="zone-title">Zone 2 · Grundlagen</div>
+                <div class="zone-desc">Leicht (60–70% HRR)</div>
+            </div>
+            <div class="zone-range" id="z2-range">0 - 0</div>
+        </div>
+
+        <div class="zone-card z3">
+            <div class="zone-info">
+                <div class="zone-title">Zone 3 · Aerob</div>
+                <div class="zone-desc">Moderat (70–80% HRR)</div>
+            </div>
+            <div class="zone-range" id="z3-range">0 - 0</div>
+        </div>
+
+        <div class="zone-card z4">
+            <div class="zone-info">
+                <div class="zone-title">Zone 4 · Schwelle</div>
+                <div class="zone-desc">Intensiv (80–90% HRR)</div>
+            </div>
+            <div class="zone-range" id="z4-range">0 - 0</div>
+        </div>
+
+        <div class="zone-card z5">
+            <div class="zone-info">
+                <div class="zone-title">Zone 5 · Anaerob</div>
+                <div class="zone-desc">Maximal (90–100% HRR)</div>
+            </div>
+            <div class="zone-range" id="z5-range">0 - 0</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const restInput = document.getElementById('input-rest');
+    const maxInput = document.getElementById('input-max');
+
+    const restValDisplay = document.getElementById('val-rest');
+    const maxValDisplay = document.getElementById('val-max');
+
+    const zones = [
+        { elem: document.getElementById('z1-range'), minPct: 0.50, maxPct: 0.60 },
+        { elem: document.getElementById('z2-range'), minPct: 0.60, maxPct: 0.70 },
+        { elem: document.getElementById('z3-range'), minPct: 0.70, maxPct: 0.80 },
+        { elem: document.getElementById('z4-range'), minPct: 0.80, maxPct: 0.90 },
+        { elem: document.getElementById('z5-range'), minPct: 0.90, maxPct: 1.00 }
+    ];
+
+    function calculateZones() {
+        let restHR = parseInt(restInput.value, 10);
+        let maxHR = parseInt(maxInput.value, 10);
+
+        if (restHR >= maxHR) {
+            restHR = maxHR - 1;
+            restInput.value = restHR;
+        }
+
+        restValDisplay.innerHTML = `${restHR} <span class="unit">BPM</span>`;
+        maxValDisplay.innerHTML = `${maxHR} <span class="unit">BPM</span>`;
+
+        const hrr = maxHR - restHR;
+
+        zones.forEach(zone => {
+            const minBpm = Math.round(restHR + (hrr * zone.minPct));
+            const maxBpm = Math.round(restHR + (hrr * zone.maxPct));
+            zone.elem.textContent = `${minBpm} - ${maxBpm}`;
+        });
+    }
+
+    restInput.addEventListener('input', calculateZones);
+    maxInput.addEventListener('input', calculateZones);
+
+    calculateZones();
+</script>
+
+</body>
+</html>
