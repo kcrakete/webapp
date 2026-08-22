@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#b31217">
+  
+  <!-- Favicon, Lesezeichen-Symbol & WebApp Logo -->
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="shortcut icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  
   <title>KC Rakete</title>
   <style>
     * {
@@ -88,7 +94,7 @@
       overflow: hidden;
     }
 
-    /* Logo als dezenter Hintergrund mit geringer Deckkraft */
+    /* Logo als dezenter Hintergrund mit 35% Deckkraft */
     .content-card::before {
       content: "";
       position: absolute;
@@ -101,44 +107,50 @@
       background-repeat: no-repeat;
       background-position: center;
       background-size: contain;
-      opacity: 0.15; /* Hier die Deckkraft anpassen (0.1 bis 1.0) */
+      opacity: 0.35; /* Auf 35% angepasst */
       pointer-events: none;
       z-index: 0;
+    }
+
+    /* Container für Header-Texte zur exakten Positionierung */
+    .header-text-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: clamp(15px, 3vh, 30px);
+      margin-bottom: clamp(10px, 2vh, 20px);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
     }
 
     /* Titel & Untertitel */
     .title {
       font-size: clamp(22px, 3.5vh, 32px);
       font-weight: bold;
-      margin-top: clamp(15px, 3vh, 30px);
       text-align: center;
       color: #ffffff;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 1;
+      line-height: 1.1;
     }
 
     .subtitle {
       font-size: clamp(12px, 1.8vh, 16px);
       color: #dddddd;
       margin-top: 4px;
-      margin-bottom: clamp(10px, 2vh, 20px);
       text-align: center;
       font-style: italic;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 1;
+      line-height: 1.2;
     }
 
-    /* Termine Box */
+    /* Termine Box - Transparent mit dünner Linie */
     .events-box {
       width: 100%;
-      border: 2px solid rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 25px;
       padding: clamp(12px, 2vh, 20px) 15px;
       text-align: center;
-      margin-bottom: clamp(12px, 2vh, 20px);
-      background-color: rgba(0, 0, 0, 0.25);
+      margin-bottom: clamp(10px, 1.8vh, 18px);
+      background-color: transparent;
       flex-shrink: 1;
       display: flex;
       flex-direction: column;
@@ -177,25 +189,26 @@
       z-index: 1;
     }
 
+    /* Buttons - Transparent mit dünner Linie */
     .btn {
       display: flex;
       align-items: center;
       justify-content: center;
       text-decoration: none;
       color: #ffffff;
-      border: 2px solid rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 25px;
       padding: clamp(8px, 1.2vh, 12px) 8px;
       font-size: clamp(12px, 1.8vh, 14px);
       text-align: center;
-      background-color: rgba(74, 74, 74, 0.6);
+      background-color: transparent;
       transition: background-color 0.2s, transform 0.1s;
       min-height: clamp(42px, 6vh, 52px);
       cursor: pointer;
     }
 
     .btn:active {
-      background-color: rgba(255, 255, 255, 0.2);
+      background-color: rgba(255, 255, 255, 0.15);
       transform: scale(0.98);
     }
 
@@ -249,7 +262,7 @@
       width: 90%;
       max-width: 500px;
       background-color: #4a4a4a;
-      border: 2px solid rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 25px;
       padding: 25px 20px;
       display: flex;
@@ -280,7 +293,7 @@
       margin-top: 10px;
       width: 100%;
       max-width: 200px;
-      border-color: rgba(255, 255, 255, 0.5);
+      border-color: rgba(255, 255, 255, 0.4);
     }
   </style>
 </head>
@@ -290,8 +303,10 @@
 
   <div class="app-container">
     <div class="content-card">
-      <h1 class="title">KC Rakete</h1>
-      <p class="subtitle">Und niemals vergessen - KC Rakete!</p>
+      <div class="header-text-group">
+        <h1 class="title">KC Rakete</h1>
+        <p class="subtitle">Und niemals vergessen - KC Rakete!</p>
+      </div>
 
       <div class="events-box">
         <h2 class="events-title">Nächste Termine</h2>
