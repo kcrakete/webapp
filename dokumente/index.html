@@ -11,7 +11,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      touch-action: manipulation;
+      touch-action: none;
       -webkit-user-select: none;
       user-select: none;
     }
@@ -33,7 +33,7 @@
       bottom: 0;
     }
 
-    /* Zurück Button fest oben links platziert, über dem Muster */
+    /* Icon Zurück-Button fest oben links über dem Banner */
     .back-btn-top {
       position: absolute;
       top: calc(12px + env(safe-area-inset-top));
@@ -70,7 +70,7 @@
       stroke-linejoin: round;
     }
 
-    /* Header Banner: Exakt 3 Reihen Rot/Silber-Schachbrett (Höhe = 3 * Kachelhöhe) */
+    /* Header Banner: Exakt 3 Reihen Rot/Silber-Schachbrett */
     .header-banner {
       width: 100vw;
       --tileSize: clamp(24px, 4vw, 36px);
@@ -102,7 +102,6 @@
       height: calc(100% - clamp(72px, 12vw, 108px));
     }
 
-    /* Responsive Optimierung für Mac / Desktop */
     @media (min-width: 768px) {
       .app-container {
         max-width: 750px;
@@ -117,7 +116,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 15px 20px clamp(15px, 3vh, 25px) 20px;
+      padding: 20px 20px clamp(20px, 4vh, 35px) 20px;
       position: relative;
       z-index: 2;
       justify-content: space-between;
@@ -125,23 +124,22 @@
     }
 
     /* Titel & Untertitel */
-    .title {
-      font-size: clamp(22px, 3.5vh, 30px);
-      font-weight: bold;
-      margin-top: 5px;
+    .title-box {
       text-align: center;
-      color: #ffffff;
       flex-shrink: 0;
     }
 
+    .title {
+      font-size: clamp(24px, 4vh, 34px);
+      font-weight: bold;
+      color: #ffffff;
+    }
+
     .subtitle {
-      font-size: clamp(12px, 1.8vh, 15px);
+      font-size: clamp(13px, 2vh, 16px);
       color: #dddddd;
       margin-top: 4px;
-      margin-bottom: clamp(12px, 2vh, 20px);
-      text-align: center;
       font-style: italic;
-      flex-shrink: 0;
     }
 
     /* Dokumente Container */
@@ -151,10 +149,11 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      margin-top: 15px;
       margin-bottom: 15px;
       overflow-y: auto;
       touch-action: pan-y;
-      padding-right: 4px;
+      padding-right: 2px;
     }
 
     /* Styled Toggle Sections (<details>) */
@@ -270,7 +269,7 @@
 </head>
 <body>
 
-  <!-- Icon Zurück-Button führt relativ zum Ordner startseite -->
+  <!-- Icon Zurück-Button -->
   <a href="../startseite/" class="back-btn-top" aria-label="Zurück">
     <svg viewBox="0 0 24 24">
       <polyline points="15 18 9 12 15 6"></polyline>
@@ -283,8 +282,10 @@
   <div class="app-container">
     <div class="content-card">
 
-      <h1 class="title">Dokumente</h1>
-      <p class="subtitle">KC Rakete Unterlagen & Listen</p>
+      <div class="title-box">
+        <h1 class="title">Dokumente</h1>
+        <p class="subtitle">KC Rakete Unterlagen & Listen</p>
+      </div>
 
       <div class="docs-container">
         
@@ -343,20 +344,17 @@
           </svg>
         </a>
       </div>
+
     </div>
   </div>
 
   <script>
-    // Zoom/Pinch/Gesture Events blockieren
-    document.addEventListener('gesturestart', function(e) {
-      e.preventDefault();
-    });
-    document.addEventListener('gesturechange', function(e) {
-      e.preventDefault();
-    });
-    document.addEventListener('gestureend', function(e) {
-      e.preventDefault();
-    });
+    // Zoom/Pinch/Gesture und Scroll-Events via JS blockieren
+    document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+    document.addEventListener('gesturechange', function(e) { e.preventDefault(); });
+    document.addEventListener('gestureend', function(e) { e.preventDefault(); });
+    document.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive: false });
+    document.addEventListener('wheel', function(e) { e.preventDefault(); }, { passive: false });
   </script>
 </body>
 </html>
