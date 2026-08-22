@@ -33,10 +33,10 @@
       bottom: 0;
     }
 
-    /* Header mit rot-weißem Schachbrettmuster über die VOLLE Bildschirmbreite */
+    /* Header mit genau 3 Reihen rot-silbernem Muster */
     .header-banner {
       width: 100vw;
-      height: clamp(120px, 20vh, 220px);
+      height: 120px; /* Fixiert auf genau 3 Reihen à 40px */
       padding-top: env(safe-area-inset-top);
       background-color: #b31217;
       background-image: 
@@ -44,7 +44,7 @@
         linear-gradient(-45deg, #a3a3a3 25%, transparent 25%), 
         linear-gradient(45deg, transparent 75%, #a3a3a3 75%), 
         linear-gradient(-45deg, transparent 75%, #a3a3a3 75%);
-      background-size: 80px 80px;
+      background-size: 80px 80px; /* 40px Reihenhöhe */
       background-position: 0 0, 0 40px, 40px -40px, -40px 0px;
       position: relative;
       flex-shrink: 0;
@@ -87,10 +87,10 @@
       justify-content: space-between;
     }
 
-    /* Transparentes Logo direkt im grauen Bereich */
+    /* Transparentes Logo - 50% größer gemacht */
     .avatar-container {
-      width: clamp(75px, 12vw + 4vh, 150px);
-      height: clamp(75px, 12vw + 4vh, 150px);
+      width: clamp(112px, 18vw + 6vh, 225px);
+      height: clamp(112px, 18vw + 6vh, 225px);
       margin-top: clamp(10px, 2vh, 20px);
       background-color: transparent;
       border: none;
