@@ -76,8 +76,8 @@
       height: 100%;
       background-color: #4a4a4a;
       margin-top: -30px;
-      border-top-left-radius: 50% 25px;
-      border-top-right-radius: 50% 25px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -92,7 +92,7 @@
       width: clamp(75px, 12vw + 4vh, 150px);
       height: clamp(75px, 12vw + 4vh, 150px);
       margin-top: calc(clamp(75px, 12vw + 4vh, 150px) / -2);
-      border-radius: 50%;
+      border-radius: 0;
       background-color: #000000;
       border: 3px solid #333333;
       display: flex;
@@ -108,7 +108,7 @@
     .avatar-container img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
     }
 
     /* Titel & Untertitel */
@@ -306,8 +306,8 @@
         <a href="/webapp/kallen/" class="btn">Ewige Kallen Tabelle</a>
         <a href="/webapp/ao/" class="btn">Kegelabgabenordnung</a>
         <a href="/webapp/chronik/" class="btn">Chronik</a>
-        <button id="docsBtn" class="btn" type="button">Bilder</button>
-        <button id="docsBtn" class="btn" type="button">Dokumente</button>
+        <a href="/webapp/bilder/" class="btn">Bilder</a>
+        <a href="/webapp/dokumente/" class="btn">Dokumente</a>
       </div>
 
       <div class="footer">
@@ -356,9 +356,11 @@
     const docsModal = document.getElementById('docsModal');
     const closeModalBtn = document.getElementById('closeModalBtn');
 
-    docsBtn.addEventListener('click', () => {
-      docsModal.classList.add('active');
-    });
+    if (docsBtn) {
+      docsBtn.addEventListener('click', () => {
+        docsModal.classList.add('active');
+      });
+    }
 
     closeModalBtn.addEventListener('click', () => {
       docsModal.classList.remove('active');
