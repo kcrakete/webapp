@@ -1,0 +1,18 @@
+{
+  "name": "KC Rakete",
+  "short_name": "KC Rakete",
+  "lang": "de",
+  "start_url": "/webapp/startseite/",
+  "scope": "/webapp/",
+  "display": "standalone",
+  "background_color": "#4A4A4A",
+  "theme_color": "#C71211",
+  "icons": [
+    {
+      "src": "/webapp/startseite/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
