@@ -411,13 +411,13 @@
     .fullscreen-wrapper {
       position: absolute;
       top: 50%;
-      left: 50%;
-      width: 100dvh;
-      height: 100dvw;
+      left: 55%;
+      width: 88dvh;
+      height: 95dvw;
       transform: translate(-50%, -50%) rotate(90deg);
       display: flex;
       flex-direction: column;
-      padding: env(safe-area-inset-top, 10px) env(safe-area-inset-right, 15px) env(safe-area-inset-bottom, 10px) env(safe-area-inset-left, 15px);
+      padding: 5px 15px;
       background-color: #2b2b2b;
       box-sizing: border-box;
     }
@@ -436,7 +436,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 5px;
+      margin-bottom: 2px;
       color: #fff;
       flex-shrink: 0;
     }
@@ -539,8 +539,8 @@
   <div class="fullscreen-modal" id="fullscreenModal">
     <div class="fullscreen-wrapper">
       <div class="fullscreen-header">
-        <span style="font-weight: bold; font-size: 0.85rem;">Ewige Tabelle (Querformat)</span>
-        <button class="btn" style="width: auto; padding: 4px 12px; font-size: 12px;" onclick="closeFullscreenChart()">Schließen</button>
+        <span style="font-weight: bold; font-size: 0.8rem;">Ewige Tabelle (Querformat)</span>
+        <button class="btn" style="width: auto; padding: 3px 10px; font-size: 11px;" onclick="closeFullscreenChart()">Schließen</button>
       </div>
       <div class="fullscreen-chart-container">
         <canvas id="fullscreenKallenChart"></canvas>
@@ -607,17 +607,17 @@
           responsive: true,
           maintainAspectRatio: false,
           layout: {
-            padding: isFullscreen ? { top: 5, bottom: 5, left: 5, right: 5 } : { top: 0, bottom: 0, left: 0, right: 0 }
+            padding: isFullscreen ? { top: 2, bottom: 2, left: 2, right: 2 } : { top: 0, bottom: 0, left: 0, right: 0 }
           },
           plugins: {
             legend: {
               labels: { 
                 color: '#ffffff',
                 font: {
-                  size: isFullscreen ? 9 : 12
+                  size: isFullscreen ? 8 : 12
                 },
-                boxWidth: isFullscreen ? 12 : 40,
-                padding: isFullscreen ? 4 : 10
+                boxWidth: isFullscreen ? 10 : 40,
+                padding: isFullscreen ? 2 : 10
               }
             }
           },
