@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#b31217">
+  
+  <link rel="icon" type="image/png" href="../logo.png">
+  <link rel="shortcut icon" type="image/png" href="../logo.png">
+  <link rel="apple-touch-icon" href="../logo.png">
+  
+  <title>Ewige Kallen Tabelle - KC Rakete</title>
+  
+  <!-- Chart.js Bibliothek -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: #4a4a4a;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    /* Header mit rot-silbernem Muster */
+    .header-banner {
+      width: 100vw;
+      height: 120px;
+      padding-top: env(safe-area-inset-top);
+      background-color: #b31217;
+      background-image: 
+        linear-gradient(45deg, #a3a3a3 25%, transparent 25%), 
+        linear-gradient(-45deg, #a3a3a3 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #a3a3a3 75%), 
+        linear-gradient(-45deg, transparent 75%, #a3a3a3 75%);
+      background-size: 80px 80px;
+      background-position: 0 0, 0 40px, 40px -40px, -40px 0px;
+      position: relative;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    /* Back-Button oben links im Header */
+    .back-btn {
+      position: absolute;
+      top: clamp(15px, 3vh, 25px);
+      left: 15px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      background-color: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      color: #ffffff;
+      text-decoration: none;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .back-btn:active {
+      background-color: rgba(0, 0, 0, 0.7);
+      transform: scale(0.95);
+    }
+
+    .back-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: #ffffff;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      transition: max-width 0.3s ease;
+      z-index: 2;
+    }
+
+    @media (min-width: 768px) {
+      .app-container {
+        max-width: 900px;
+      }
+    }
+
+    .content-card {
+      width: 100%;
+      background-color: #4a4a4a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 10px 30px 10px;
+      position: relative;
+      z-index: 2;
+    }
+
+    @media (min-width: 480px) {
+      .content-card {
+        padding: 0 20px 30px 20px;
+      }
+    }
+
+    /* Logo-Hintergrund */
+    .content-card::before {
+      content: "";
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 80%;
+      background-image: url('../rakete.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .header-text-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: clamp(15px, 3vh, 30px);
+      margin-bottom: clamp(15px, 2vh, 25px);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .title {
+      font-size: clamp(22px, 3.5vh, 32px);
+      font-weight: bold;
+      text-align: center;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      font-size: clamp(12px, 1.8vh, 16px);
+      color: #dddddd;
+      margin-top: 4px;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* Box für Chart */
+    .chart-box {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 20px;
+      padding: 15px;
+      margin-bottom: 25px;
+      background-color: rgba(0, 0, 0, 0.2);
+      position: relative;
+      z-index: 1;
+      cursor: pointer;
+    }
+
+    .chart-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      color: #ddd;
+    }
+
+    .fullscreen-hint {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 4px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 320px;
+    }
+
+    /* Spieler-Karten Grid */
+    .section-title {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: #fff;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .player-cards {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (min-width: 600px) {
+      .player-cards {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 12px;
+      }
+    }
+
+    .card {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    @media (min-width: 480px) {
+      .card {
+        border-radius: 16px;
+        padding: 12px 15px;
+      }
+    }
+
+    .card:active {
+      background-color: rgba(255, 255, 255, 0.15);
+      transform: scale(0.98);
+    }
+
+    .card h3 {
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (min-width: 480px) {
+      .card h3 {
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+      }
+    }
+
+    .card-stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      margin-bottom: 3px;
+      color: #cccccc;
+    }
+
+    @media (min-width: 480px) {
+      .card-stat {
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+      }
+    }
+
+    .card-stat span.value {
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    /* Detail Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      width: 90%;
+      max-width: 420px;
+      background-color: #4a4a4a;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 25px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .stat-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .stat-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 12px;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .stat-box .number {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #ff6b6b;
+    }
+
+    .stat-box .label {
+      font-size: 0.75rem;
+      color: #dddddd;
+      margin-top: 2px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 25px;
+      padding: 10px 15px;
+      font-size: 14px;
+      text-align: center;
+      background-color: transparent;
+      transition: background-color 0.2s, transform 0.1s;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .btn:active {
+      background-color: rgba(255, 255, 255, 0.15);
+      transform: scale(0.98);
+    }
+
+    /* Vollbild Querformat Diagramm Modal (Erzwungene Rotation) */
+    .fullscreen-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: #2b2b2b;
+      z-index: 200;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .fullscreen-modal.active {
+      display: flex;
+    }
+
+    .fullscreen-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100vh;
+      height: 100vw;
+      transform: translate(-50%, -50%) rotate(90deg);
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      background-color: #2b2b2b;
+      box-sizing: border-box;
+    }
+
+    @media (orientation: landscape) {
+      .fullscreen-wrapper {
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        transform: none;
+      }
+    }
+
+    .fullscreen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .fullscreen-chart-container {
+      flex: 1;
+      width: 100%;
+      position: relative;
+    }
+
+    #loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 1.1rem;
+      color: #ddd;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Banner mit Back-Button -->
+  <div class="header-banner">
+    <a href="../startseite/index.html" class="back-btn" aria-label="Zurück zur Startseite">
+      <svg viewBox="0 0 24 24">
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+      </svg>
+    </a>
+  </div>
+
+  <div class="app-container">
+    <div class="content-card">
+      
+      <div class="header-text-group">
+        <h1 class="title">Ewige Kallen Tabelle</h1>
+        <p class="subtitle">Statistiken & Übersicht</p>
+      </div>
+
+      <div id="loading">Daten werden geladen...</div>
+
+      <div id="app" style="display: none; width: 100%;">
+        
+        <!-- Interaktives Diagramm -->
+        <div class="chart-box" onclick="openFullscreenChart()">
+          <div class="chart-box-header">
+            <span>Übersicht</span>
+            <div class="fullscreen-hint">
+              <svg style="width:12px;height:12px;fill:#fff" viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+              </svg>
+              Querformat / Zoom
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="kallenChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Spieler Karten Grid -->
+        <h2 class="section-title">Kegelbrüder</h2>
+        <div class="player-cards" id="playerCards"></div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <h2 class="modal-title" id="modalPlayerName">Spieler Name</h2>
+      
+      <div class="stat-grid">
+        <div class="stat-box">
+          <div class="number" id="modalTotalKallen">0</div>
+          <div class="label">∑ Kallen</div>
+        </div>
+        <div class="stat-box">
+          <div class="number" id="modalParticipations">0</div>
+          <div class="label">∑ Teilnahmen</div>
+        </div>
+        <div class="stat-box">
+          <div class="number" id="modalAvg">0.0</div>
+          <div class="label">⌀ Kallen/Teilnahme</div>
+        </div>
+        <div class="stat-box">
+          <div class="number" id="modalKings">0</div>
+          <div class="label">∑ König</div>
+        </div>
+      </div>
+
+      <button class="btn" onclick="closeModal()">Schließen</button>
+    </div>
+  </div>
+
+  <!-- Vollbild Querformat Diagramm Modal -->
+  <div class="fullscreen-modal" id="fullscreenModal">
+    <div class="fullscreen-wrapper">
+      <div class="fullscreen-header">
+        <span style="font-weight: bold;">Ewige Tabelle (Querformat)</span>
+        <button class="btn" style="width: auto; padding: 5px 15px;" onclick="closeFullscreenChart()">Schließen</button>
+      </div>
+      <div class="fullscreen-chart-container">
+        <canvas id="fullscreenKallenChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Einbindung der kegel_api.js -->
+  <script src="kegel_api.js"></script>
+
+  <script>
+    let allStats = [];
+    let mainChart = null;
+    let fullscreenChart = null;
+
+    async function initApp() {
+      try {
+        allStats = await getKegelStats();
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+
+        renderChart(allStats);
+        renderCards(allStats);
+      } catch (error) {
+        document.getElementById('loading').innerText = 'Fehler beim Laden der Daten.';
+      }
+    }
+
+    function getChartConfig(stats, isFullscreen = false) {
+      const labels = stats.map(s => s.name);
+      const totalKallenData = stats.map(s => s.totalKallen);
+      const avgKallenData = stats.map(s => s.avgKallen);
+
+      return {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              type: 'line',
+              label: '⌀ Kallen/Teilnahme',
+              data: avgKallenData,
+              borderColor: '#ff6b6b',
+              borderWidth: 3,
+              fill: false,
+              yAxisID: 'yAvg',
+              tension: 0.2,
+              pointRadius: 4,
+              pointBackgroundColor: '#ff6b6b'
+            },
+            {
+              type: 'bar',
+              label: '∑ Kallen',
+              data: totalKallenData,
+              backgroundColor: 'rgba(255, 255, 255, 0.4)',
+              hoverBackgroundColor: 'rgba(255, 255, 255, 0.7)',
+              yAxisID: 'yTotal',
+              barPercentage: 0.6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: '#ffffff' }
+            }
+          },
+          onClick: (e, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              openModal(stats[index]);
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.1)' },
+              ticks: { 
+                color: '#ffffff',
+                autoSkip: false,
+                maxRotation: isFullscreen ? 0 : 45,
+                font: {
+                  size: isFullscreen ? 12 : 10
+                }
+              }
+            },
+            yTotal: {
+              type: 'linear',
+              position: 'left',
+              title: { display: true, text: '∑ Kallen', color: '#ffffff' },
+              beginAtZero: true,
+              grid: { color: 'rgba(255, 255, 255, 0.1)' },
+              ticks: { color: '#ffffff' }
+            },
+            yAvg: {
+              type: 'linear',
+              position: 'right',
+              title: { display: true, text: '⌀ Kallen/Teilnahme', color: '#ff6b6b' },
+              beginAtZero: true,
+              grid: { drawOnChartArea: false },
+              ticks: { color: '#ff6b6b' }
+            }
+          }
+        }
+      };
+    }
+
+    function renderChart(stats) {
+      const ctx = document.getElementById('kallenChart').getContext('2d');
+      mainChart = new Chart(ctx, getChartConfig(stats, false));
+    }
+
+    function renderCards(stats) {
+      const container = document.getElementById('playerCards');
+      container.innerHTML = '';
+
+      stats.forEach(player => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => openModal(player);
+
+        card.innerHTML = `
+          <h3>${player.name}</h3>
+          <div class="card-stat"><span>∑ Kallen:</span><span class="value">${player.totalKallen}</span></div>
+          <div class="card-stat"><span>∑ Teilnahmen:</span><span class="value">${player.totalParticipations}</span></div>
+          <div class="card-stat"><span>⌀ Schnitt:</span><span class="value">${player.avgKallen}</span></div>
+          <div class="card-stat"><span>∑ König:</span><span class="value">${player.totalKings}</span></div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openModal(player) {
+      document.getElementById('modalPlayerName').innerText = player.name;
+      document.getElementById('modalTotalKallen').innerText = player.totalKallen;
+      document.getElementById('modalParticipations').innerText = player.totalParticipations;
+      document.getElementById('modalAvg').innerText = player.avgKallen;
+      document.getElementById('modalKings').innerText = player.totalKings;
+
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    /* Vollbild Diagramm Steuerung */
+    function openFullscreenChart() {
+      const modal = document.getElementById('fullscreenModal');
+      modal.classList.add('active');
+
+      if (!fullscreenChart) {
+        const ctx = document.getElementById('fullscreenKallenChart').getContext('2d');
+        fullscreenChart = new Chart(ctx, getChartConfig(allStats, true));
+      } else {
+        fullscreenChart.update();
+      }
+    }
+
+    function closeFullscreenChart() {
+      const modal = document.getElementById('fullscreenModal');
+      modal.classList.remove('active');
+    }
+
+    initApp();
+  </script>
+</body>
+</html>
