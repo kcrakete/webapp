@@ -44,8 +44,9 @@ async function getKegelStats() {
             }
         });
 
-        if (row.king) {
-            const kingName = row.king.trim();
+        const kingVal = row.king || row.König;
+        if (kingVal) {
+            const kingName = String(kingVal).trim();
             if (statsMap[kingName]) {
                 statsMap[kingName].totalKings += 1;
             }
