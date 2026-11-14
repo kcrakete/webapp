@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#4A4A4A">
+<title>KC Rakete – Kegelkasse</title>
+<style>
+/* Schriften lokal ablegen (DSGVO): Ordner fonts/ neben dieser Datei. Fehlen sie, greifen die Fallbacks. */
+@font-face{font-family:"Barlow";font-weight:400;src:local("Barlow"),url(fonts/Barlow-Regular.woff2)}
+@font-face{font-family:"Barlow";font-weight:500;src:local("Barlow Medium"),url(fonts/Barlow-Medium.woff2)}
+@font-face{font-family:"Barlow Condensed";font-weight:800;font-style:italic;src:local("Barlow Condensed ExtraBold Italic"),url(fonts/BarlowCondensed-ExtraBoldItalic.woff2)}
+:root{--red:#C71211;--grey:#4A4A4A;--line:rgba(255,255,255,.4);--silver:#BFBFBF;--band:40px;--title:"Barlow Condensed","Arial Narrow",Arial,sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:var(--grey);color:#fff;font:400 15px/1.4 Barlow,"Helvetica Neue",Helvetica,Arial,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+input,textarea,button{font:inherit;color:inherit}
+.karo{background-color:#C71211;background-image:linear-gradient(45deg,#A3A3A3 25%,transparent 25%),linear-gradient(-45deg,#A3A3A3 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#A3A3A3 75%),linear-gradient(-45deg,transparent 75%,#A3A3A3 75%);background-size:80px 80px;background-position:0 0,0 40px,40px -40px,-40px 0}
+.band{height:calc(var(--band) + env(safe-area-inset-top))}
+header{padding:14px 14px 4px}
+.top{display:flex;align-items:center;gap:12px}
+.top img{height:80px;width:auto}
+h1{font:italic 800 32px/1 var(--title);margin:0}
+.sub{font-style:italic;font-size:16px;color:var(--silver);margin-top:4px}
+input[type=text],input[type=number],input:not([type]){background:transparent;border:1px solid var(--line);border-radius:12px;padding:9px 11px}
+.btn{border:1px solid var(--line);background:transparent;border-radius:25px;padding:12px 10px;cursor:pointer;transition:transform .08s}
+.btn:active,.ph:active{background:rgba(255,255,255,.15);transform:scale(.98)}
+.btn.main{background:var(--red);border-color:var(--red)}
+.bar{display:flex;gap:8px;margin:10px 0}
+.bar .btn{flex:1}
+#dateBtn{flex:1.6;text-align:left;padding-left:18px}
+#dateBtn b{font-weight:500}
+main{padding:6px 14px 40px}
+.card{border:1px solid var(--line);border-radius:25px;margin-bottom:8px;overflow:hidden}
+.ph{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;cursor:pointer;font-weight:500;font-size:17px}
+.ph span{font-variant-numeric:tabular-nums}
+.pb{border-top:1px solid var(--line);padding:6px 20px 12px}
+.c{display:flex;align-items:center;justify-content:space-between;padding:7px 0}
+.c small{color:var(--silver);display:block;font-size:13px}
+.st{display:flex;align-items:center;gap:10px}
+.st b{min-width:30px;text-align:center;font-size:18px;font-weight:500}
+.st button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:transparent;font-size:22px;cursor:pointer}
+.st button:active{background:rgba(255,255,255,.15);transform:scale(.98)}
+.st button.p{background:var(--red);border-color:var(--red)}
+.tot{display:flex;justify-content:space-between;font-weight:500;font-size:19px;padding:10px 6px}
+.empty{color:var(--silver);text-align:center;padding:30px 0}
+dialog{border:1px solid var(--line);border-radius:25px;background:var(--grey);color:#fff;width:min(92vw,440px);max-height:90vh;padding:18px;overflow:auto}
+dialog::backdrop{background:#000a}
+dialog h3{margin:0 0 6px;font:italic 800 26px var(--title)}
+.hint{color:var(--silver);font-size:13px;margin:14px 0 6px}
+label.r{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:6px 0}
+label.r input{width:90px;text-align:right}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
+label.k{display:flex;align-items:center;gap:10px;padding:6px 0}
+label.k input{width:22px;height:22px;accent-color:#C71211}
+#dlg input.w{width:100%;margin-bottom:6px;text-align:left}
+/* Querformat-Ansicht */
+#ov{position:fixed;inset:0;background:var(--grey);z-index:50;overflow:hidden}
+#ov[hidden]{display:none}
+#stage{position:absolute;left:50%;top:50%;width:1100px;transform-origin:center;background:var(--grey)}
+#stage .karo{height:40px}
+#stage h2{font:italic 800 40px/1 var(--title);margin:18px 22px 14px}
+#stage table{border-collapse:collapse;width:calc(100% - 44px);margin:0 22px 22px;font-size:17px}
+#stage th,#stage td{border:1px solid var(--line);padding:8px 6px;text-align:center}
+#stage th{font-weight:500;font-size:14px;line-height:1.25}
+#stage th small{display:block;color:var(--silver);font-size:13px}
+#stage td:first-child,#stage th:first-child{text-align:left;padding-left:12px}
+#stage td:last-child,#stage tfoot td{font-weight:500}
+#stage tfoot td{background:rgba(255,255,255,.1)}
+#hint{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#000a;padding:6px 14px;border-radius:25px;font-size:13px;animation:fade .5s 2.2s forwards;pointer-events:none}
+@keyframes fade{to{opacity:0}}
+</style>
+</head>
+<body>
+<div class="karo band"></div>
+<header>
+  <div class="top">
+    <img src="Logo_ohne_Hintergrund.png" alt="" onerror="this.remove()">
+    <div><h1>KC Rakete</h1><div class="sub">Und niemals vergessen!</div></div>
+  </div>
+  <div class="bar">
+    <button class="btn" id="dateBtn"></button>
+    <button class="btn main" id="tabBtn">Tabelle</button>
+  </div>
+</header>
+<main id="main"></main>
+
+<dialog id="dlg">
+  <h3>Kegelabend</h3>
+  <div class="hint" style="margin-top:8px">Datum</div>
+  <input id="fDate" class="w" inputmode="numeric" placeholder="TT.MM.JJJJ" maxlength="10">
+  <div class="hint">Teilnehmer</div>
+  <div class="grid" id="fOn"></div>
+  <div class="hint">Gäste (bis zu 3)</div>
+  <input class="w" data-g="0" placeholder="Gast 1">
+  <input class="w" data-g="1" placeholder="Gast 2">
+  <input class="w" data-g="2" placeholder="Gast 3">
+  <div class="hint">Preise in €</div>
+  <div id="fPrices"></div>
+  <div class="bar"><button class="btn" id="cancel">Abbrechen</button><button class="btn main" id="save">Speichern</button></div>
+  <button class="btn" id="new" style="width:100%">Neuer Abend (alles zurücksetzen)</button>
+</dialog>
+
+<div id="ov" hidden><div id="stage"></div><div id="hint">Zum Schließen tippen</div></div>
+
+<script>
+const REG=["Marvin","Yannick","Niklas","Fabian","Cengiz","Christoph","Tobias","Leo","Neitzke","Julian"];
+const CATS=[
+ {k:"kal",n:"Kallen",p:.5,h:"Kallen"},
+ {k:"ver",n:"Verlorenes Spiel",p:1,h:"Verlorenes Spiel"},
+ {k:"kli",n:"Klingel",p:1,h:"Klingel"},
+ {k:"kug",n:"Kugel",p:2,h:"Kugel"},
+ {k:"bil",n:"Bilder",p:.5,h:"Bilder"},
+ {k:"rei",n:"Reihenfolge / Glas / Aufschreiben",p:1,h:"Reihenfolge / Glas / Aufschreiben"},
+ {k:"lan",n:"Langsames Werfen",p:5,h:"Langsames Werfen"},
+ {k:"anr",n:"Anrufen (je Strich)",p:.1,h:"Anrufen"},
+ {k:"son",n:"Sonstiges (Betrag frei)",p:0,h:"Sonstiges",custom:true}
+];
+const KEY="kcRaketeKegelliste2",OLD="kcRaketeKegelliste";
+const pad=n=>String(n).padStart(2,"0");
+const today=()=>{const d=new Date();return pad(d.getDate())+"."+pad(d.getMonth()+1)+"."+d.getFullYear()};
+let S={date:today(),on:{},guests:["","",""],prices:{},e:{}};
+CATS.forEach(c=>S.prices[c.k]=c.p);
+try{ // Preise/Datum aus der Vorversion übernehmen
+  const o=JSON.parse(localStorage.getItem(OLD));
+  if(o&&o.prices)CATS.forEach(c=>{if(o.prices[c.k]!=null)S.prices[c.k]=o.prices[c.k]});
+  if(o&&o.date)S.date=/^\d{4}-/.test(o.date)?o.date.split("-").reverse().join("."):o.date;
+}catch(e){}
+try{const r=JSON.parse(localStorage.getItem(KEY));if(r){S=Object.assign(S,r);CATS.forEach(c=>{if(S.prices[c.k]==null)S.prices[c.k]=c.p})}}catch(e){}
+let open=null;
+const $=id=>document.getElementById(id);
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const eur=v=>v.toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const players=()=>[
+  ...REG.map((n,i)=>({id:"r"+i,n})).filter(p=>S.on[p.id]!==false),
+  ...S.guests.map((g,i)=>({id:"g"+i,n:g.trim()})).filter(p=>p.n)
+];
+const get=(id,k)=>S.e[id+"_"+k]||0;
+const cost=(id,k)=>{const c=CATS.find(x=>x.k===k);return c.custom?get(id,k):get(id,k)*S.prices[k]};
+const total=id=>CATS.reduce((s,c)=>s+cost(id,c.k),0);
+const grand=()=>players().reduce((s,p)=>s+total(p.id),0);
+
+function bump(id,k,d){
+  const c=CATS.find(x=>x.k===k),key=id+"_"+k;
+  if(c.custom){
+    if(d>0){const v=parseFloat((prompt("Betrag in € (z. B. 2,50)","")||"").replace(",","."));if(!v||v<=0)return;S.e[key]=Math.round(((S.e[key]||0)+v)*100)/100}
+    else S.e[key]=0;
+  }else S.e[key]=Math.max(0,(S.e[key]||0)+d);
+  save();render();
+}
+function toggle(id){open=open===id?null:id;render()}
+
+function render(){
+  $("dateBtn").innerHTML='Kegeln am: <b>'+S.date+'</b> ✎';
+  const ps=players();
+  let h="";
+  ps.forEach(p=>{
+    h+=`<div class="card"><div class="ph" onclick="toggle('${p.id}')">${esc(p.n)}<span>${eur(total(p.id))}</span></div>`;
+    if(open===p.id){
+      h+='<div class="pb">';
+      CATS.forEach(c=>{
+        const v=get(p.id,c.k);
+        const sub=c.custom?"":eur(S.prices[c.k])+(v?" · "+eur(cost(p.id,c.k)):"");
+        h+=`<div class="c"><div>${c.n}<small>${sub}</small></div><div class="st">`+
+        (c.custom?`<b>${v?eur(v):"–"}</b><button onclick="bump('${p.id}','${c.k}',-1)" aria-label="Zurücksetzen">⌫</button>`:`<button onclick="bump('${p.id}','${c.k}',-1)">−</button><b>${v}</b>`)+
+        `<button class="p" onclick="bump('${p.id}','${c.k}',1)">+</button></div></div>`;
+      });
+      h+="</div>";
+    }
+    h+="</div>";
+  });
+  h+=ps.length?`<div class="tot"><span>Gesamt</span><span>${eur(grand())}</span></div>`:'<div class="empty">Keine Teilnehmer – oben aufs Datum tippen.</div>';
+  $("main").innerHTML=h;
+}
+
+/* Einstellungen (über das Datum) */
+function openSettings(){
+  $("fDate").value=S.date;
+  $("fOn").innerHTML=REG.map((n,i)=>`<label class="k"><input type="checkbox" data-r="r${i}" ${S.on["r"+i]!==false?"checked":""}>${n}</label>`).join("");
+  document.querySelectorAll("#dlg [data-g]").forEach(i=>i.value=S.guests[+i.dataset.g]||"");
+  $("fPrices").innerHTML=CATS.filter(c=>!c.custom).map(c=>`<label class="r">${c.n}<input type="number" step="0.05" min="0" inputmode="decimal" data-k="${c.k}" value="${S.prices[c.k]}"></label>`).join("");
+  $("dlg").showModal();
+}
+$("dateBtn").onclick=openSettings;
+$("cancel").onclick=()=>$("dlg").close();
+$("save").onclick=()=>{
+  const m=$("fDate").value.trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{2}|\d{4})$/);
+  if(!m){alert("Datum bitte als TT.MM.JJJJ eingeben.");return}
+  S.date=pad(+m[1])+"."+pad(+m[2])+"."+(m[3].length==2?"20"+m[3]:m[3]);
+  document.querySelectorAll("#fOn input").forEach(i=>S.on[i.dataset.r]=i.checked);
+  document.querySelectorAll("#dlg [data-g]").forEach(i=>S.guests[+i.dataset.g]=i.value.trim());
+  document.querySelectorAll("#fPrices input").forEach(i=>{const v=parseFloat(i.value);if(!isNaN(v))S.prices[i.dataset.k]=v});
+  open=null;save();$("dlg").close();render();
+};
+$("new").onclick=()=>{
+  if(!confirm("Alle Einträge löschen und neuen Abend starten? Gäste werden entfernt, alle Kegler sind wieder dabei."))return;
+  S.e={};S.on={};S.guests=["","",""];S.date=today();open=null;save();$("dlg").close();render();
+};
+
+/* Tabelle: Querformat, automatisch eingepasst, kein Zoom/Scrollen */
+function layoutStage(){
+  const st=$("stage"),portrait=innerWidth<innerHeight;
+  const aw=(portrait?innerHeight:innerWidth)-32,ah=(portrait?innerWidth:innerHeight)-32;
+  const s=Math.min(aw/1100,ah/st.offsetHeight,2);
+  st.style.transform=`translate(-50%,-50%) rotate(${portrait?90:0}deg) scale(${s})`;
+}
+function showTable(){
+  const ps=players();
+  let h='<div class="karo"></div><h2>KC Rakete – Kegeln am: '+S.date+'</h2><table><thead><tr><th>Kegler</th>'+
+    CATS.map(c=>`<th>${c.h}${c.custom?"":`<small>${eur(S.prices[c.k])}</small>`}</th>`).join("")+'<th>Gesamt</th></tr></thead><tbody>';
+  ps.forEach(p=>{
+    h+=`<tr><td>${esc(p.n)}</td>`+CATS.map(c=>{const v=get(p.id,c.k);return`<td>${v?(c.custom?eur(v):v):""}</td>`}).join("")+`<td>${eur(total(p.id))}</td></tr>`;
+  });
+  h+='</tbody><tfoot><tr><td>Gesamt</td>'+CATS.map(c=>{let s=0;ps.forEach(p=>s+=get(p.id,c.k));return`<td>${s?(c.custom?eur(s):s):""}</td>`}).join("")+`<td>${eur(grand())}</td></tr></tfoot></table>`;
+  $("stage").innerHTML=h;
+  $("ov").hidden=false;
+  const hn=$("hint");hn.style.animation="none";void hn.offsetWidth;hn.style.animation="";
+  layoutStage();
+}
+$("tabBtn").onclick=showTable;
+$("ov").onclick=()=>{$("ov").hidden=true};
+addEventListener("resize",()=>{if(!$("ov").hidden)layoutStage()});
+render();
+</script>
+</body>
+</html>
